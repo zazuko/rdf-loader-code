@@ -1,0 +1,35 @@
+{
+  "name": "rdf-native-loader-code",
+  "version": "0.0.0",
+  "description": "JavaScript native types loader for the Code ontology",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard && jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/zazuko/rdf-native-loader-code.git"
+  },
+  "keywords": [],
+  "author": "Thomas Bergwinkl <bergi@axolotlfarm.org> (https://www.bergnet.org/people/bergi/card#me)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zazuko/rdf-native-loader-code/issues"
+  },
+  "homepage": "https://github.com/zazuko/rdf-native-loader-code",
+  "dependencies": {
+    "@rdfjs/namespace": "^1.0.0",
+    "clownface": "^0.10.0"
+  },
+  "devDependencies": {
+    "jest": "^24.1.0",
+    "rdf-ext": "^1.2.2",
+    "standard": "^12.0.1"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "lib/**"
+    ]
+  }
+}

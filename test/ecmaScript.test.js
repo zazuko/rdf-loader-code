@@ -33,6 +33,19 @@ describe('ecmaScript loader', () => {
       expect(result).toBe('Hello world')
     })
 
+    test('should accept object literals', () => {
+      // given
+      // eslint-disable-next-line no-template-curly-in-string
+      const node = rdf.literal('{a: (b) => `a${b}c`}', code('EcmaScript'))
+
+      // when
+      const objectLiteral = loader(node, dataset, context)
+
+      // then
+      const result = objectLiteral.a('b')
+      expect(result).toBe('abc')
+    })
+
     test('should throw if node does not have correct datatype', () => {
       // given
       const node = rdf.literal("() => 'nothing'", code('unrecognized'))

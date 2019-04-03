@@ -4,7 +4,8 @@
   "description": "JavaScript native types loader for the Code ontology",
   "main": "index.js",
   "scripts": {
-    "test": "standard && jest"
+    "pretest": "standard",
+    "test": "jest"
   },
   "repository": {
     "type": "git",

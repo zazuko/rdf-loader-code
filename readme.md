@@ -60,7 +60,7 @@ const createReadStream = registry.load(cf(dataset).node(parentNode).out(implemen
 
 ### JS code loaded from source file
 
-Similar to the above but loads teh default export from a local file `lib/myCode.js`
+Similar to the above but loads the default export from a local `lib/myCode.js` file.
 
 ```turtle
 @prefix code: <https://code.described.at/>
@@ -88,10 +88,14 @@ const myCode = registry.load(
   })
 ```
 
-It is also possible to load named exports similarly to the first example, by using hash fragments
-like `file:lib/myCode#namedExport`
+It is also possible to load named exports similarly to the first example by using hash fragments
+like `file:lib/myCode#namedExport`.
 
 ### JS literal inlined in RDF dataset
+
+A piece of JS code can also be placed directly in the triples. 
+
+This snippet shows how an `Array#filter` callback can be loaded from the dataset.
 
 ```turtle
 @prefix code: <https://code.described.at/>
@@ -113,6 +117,9 @@ const filterFunc = registry.load(cf(dataset).node(parentNode).out(implementedBy)
 ```
 
 ### JS template string literal
+
+A dedicated datatype can also be used to load a string based on a template literal. The loader will substitute
+the variables based on an optional parameter.
 
 ```turtle
 @prefix code: <https://code.described.at/>

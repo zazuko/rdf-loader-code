@@ -1,7 +1,7 @@
 # Native RDF loaders for the [code](https://code.described.at) vocabulary
 
 The loaders contained in this packages let developers link RDF to native code and load that code at runtime
-to be exacuted in their programs.
+to be executed in their programs.
 
 ## Installation
 

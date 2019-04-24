@@ -11,7 +11,6 @@ describe('ecmaScript loader', () => {
   let dataset
   let def
   const context = {
-    basePath: '/some/path'
   }
 
   beforeEach(async () => {

@@ -3,6 +3,7 @@ const createReadStream = require('fs').createReadStream
 const cf = require('clownface')
 const path = require('path')
 const expect = require('expect')
+const assert = require('assert')
 const rdf = require('rdf-ext')
 const Parser = require('@rdfjs/parser-n3')
 const sinon = require('sinon')
@@ -17,23 +18,64 @@ describe('arguments loader', () => {
 
   beforeEach(() => {
     loaderRegistry = {
-      load: sinon.spy()
+      load: sinon.stub()
     }
   })
 
-  test('should accept arguments from rdf:List', async () => {
-    // given
-    const options = {
-      loaderRegistry
-    }
-    const dataset = await loadDataset('./list-arguments.ttl')
-    const node = cf(dataset).node(rootNode).out(ns.code.arguments)
+  describe('loading from rdf:List', () => {
+    test('should fall back to verbatim literal value', async () => {
+      // given
+      const options = {
+        loaderRegistry
+      }
+      const dataset = await loadDataset('./list-arguments.ttl')
+      const node = cf(dataset).node(rootNode).out(ns.code.arguments)
 
-    // when
-    const result = await loader(node.term, dataset, options)
+      // when
+      const result = await loader(node.term, dataset, options)
 
-    // then
-    expect(result).toEqual(['a', 'b'])
+      // then
+      expect(result).toEqual(['a', 'b'])
+    })
+
+    test('should use loaders to load values', async () => {
+      // given
+      const options = {
+        loaderRegistry
+      }
+      const dataset = await loadDataset('./list-arguments.ttl')
+      const node = cf(dataset).node(rootNode).out(ns.code.arguments)
+      loaderRegistry.load.callsFake((arg) => arg.value.toUpperCase())
+
+      // when
+      const result = await loader(node.term, dataset, options)
+
+      // then
+      expect(result).toEqual(['A', 'B'])
+    })
+
+    test('should forward options to loaderRegistry', async () => {
+      // given
+      const options = {
+        loaderRegistry,
+        context: {},
+        variables: new Map(),
+        basePath: '/some/path'
+      }
+      const dataset = await loadDataset('./list-arguments.ttl')
+      const node = cf(dataset).node(rootNode).out(ns.code.arguments)
+
+      // when
+      await loader(node.term, dataset, options)
+
+      // then
+      assert(loaderRegistry.load.calledWith(
+        sinon.match.object,
+        options.context,
+        options.variables,
+        options.basePath
+      ))
+    })
   })
 })
 

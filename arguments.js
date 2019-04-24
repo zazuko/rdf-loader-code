@@ -9,7 +9,7 @@ async function parseArguments (args, options) {
 
   // or an object?
   const argNodes = args.toArray()
-  const promises = argNodes.map((argNode) => parseArgument(argNode.out(ns.p.value), options))
+  const promises = argNodes.map((argNode) => parseArgument(argNode.out(ns.code.value), options))
   const values = await Promise.all(promises)
 
   // merge all key value pairs into an object

@@ -28,11 +28,11 @@ describe('arguments loader', () => {
       const options = {
         loaderRegistry
       }
-      const dataset = await loadDataset('./list-arguments.ttl')
-      const node = cf(dataset).node(rootNode).out(ns.code.arguments)
+      const dataset = await loadDataset('./arguments-list.ttl')
+      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
 
       // when
-      const result = await loader(node.term, dataset, options)
+      const result = await loader(args, dataset, options)
 
       // then
       expect(result).toEqual(['a', 'b'])
@@ -43,12 +43,12 @@ describe('arguments loader', () => {
       const options = {
         loaderRegistry
       }
-      const dataset = await loadDataset('./list-arguments.ttl')
-      const node = cf(dataset).node(rootNode).out(ns.code.arguments)
+      const dataset = await loadDataset('./arguments-list.ttl')
+      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
       loaderRegistry.load.callsFake((arg) => arg.value.toUpperCase())
 
       // when
-      const result = await loader(node.term, dataset, options)
+      const result = await loader(args, dataset, options)
 
       // then
       expect(result).toEqual(['A', 'B'])
@@ -62,11 +62,73 @@ describe('arguments loader', () => {
         variables: new Map(),
         basePath: '/some/path'
       }
-      const dataset = await loadDataset('./list-arguments.ttl')
-      const node = cf(dataset).node(rootNode).out(ns.code.arguments)
+      const dataset = await loadDataset('./arguments-list.ttl')
+      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
 
       // when
-      await loader(node.term, dataset, options)
+      await loader(args, dataset, options)
+
+      // then
+      assert(loaderRegistry.load.calledWith(
+        sinon.match.object,
+        options.context,
+        options.variables,
+        options.basePath
+      ))
+    })
+  })
+
+  describe('loading from set of name/value pairs', () => {
+    test('should fall back to verbatim literal value', async () => {
+      // given
+      const options = {
+        loaderRegistry
+      }
+      const dataset = await loadDataset('./arguments-named.ttl')
+      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
+
+      // when
+      const result = await loader(args, dataset, options)
+
+      // then
+      expect(result).toEqual([{
+        'foo': 'bar',
+        'a': 'b'
+      }])
+    })
+
+    test('should use loaders to load values', async () => {
+      // given
+      const options = {
+        loaderRegistry
+      }
+      const dataset = await loadDataset('./arguments-named.ttl')
+      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
+      loaderRegistry.load.callsFake((arg) => arg.value.toUpperCase())
+
+      // when
+      const result = await loader(args, dataset, options)
+
+      // then
+      expect(result).toEqual([{
+        'foo': 'BAR',
+        'a': 'B'
+      }])
+    })
+
+    test('should forward options to loaderRegistry', async () => {
+      // given
+      const options = {
+        loaderRegistry,
+        context: {},
+        variables: new Map(),
+        basePath: '/some/path'
+      }
+      const dataset = await loadDataset('./arguments-named.ttl')
+      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
+
+      // when
+      await loader(args, dataset, options)
 
       // then
       assert(loaderRegistry.load.calledWith(

@@ -82,4 +82,32 @@ describe('ecmaScript loader', () => {
       expect(typeof str).toBe('string')
     })
   })
+
+  describe('loading from file:', () => {
+    test('should return default export', () => {
+      // given
+      // <operation> code:link <file:foobar>
+      const node = def.node(example('operation'))
+      node.addOut(code('link'), rdf.namedNode('file:foobar'))
+
+      // when
+      const value = loader(node.term, dataset, { context, basePath: __dirname })
+
+      // then
+      expect(value.foo.foo).toBe('bar')
+    })
+
+    test('should return correct export if using hash and dot notation', () => {
+      // given
+      // <operation> code:link <file:foobar.foo>
+      const node = def.node(example('operation'))
+      node.addOut(code('link'), rdf.namedNode('file:foobar#foo.foo'))
+
+      // when
+      const foo = loader(node.term, dataset, { context, basePath: __dirname })
+
+      // then
+      expect(foo).toBe('bar')
+    })
+  })
 })

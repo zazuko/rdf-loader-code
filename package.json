@@ -30,7 +30,7 @@
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "lib/**"
+      "*.js"
     ]
   }
 }

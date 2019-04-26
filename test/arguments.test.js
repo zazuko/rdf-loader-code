@@ -35,7 +35,7 @@ describe('arguments loader', () => {
       const result = await loader(args, dataset, options)
 
       // then
-      expect(result).toEqual(['a', 'b'])
+      expect(result).toEqual(['a', '5'])
     })
 
     test('should use loaders to load values', async () => {
@@ -51,7 +51,7 @@ describe('arguments loader', () => {
       const result = await loader(args, dataset, options)
 
       // then
-      expect(result).toEqual(['A', 'B'])
+      expect(result).toEqual(['A', '5'])
     })
 
     test('should forward options to loaderRegistry', async () => {

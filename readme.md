@@ -149,3 +149,99 @@ const helloString = registry.load(
     variables
   })
 ```
+
+### Loading function arguments
+
+This package also provides an utility loader which can be used to load an array of function arguments.
+Using this arguments loader it is possible to declare parametrized code within the RDF graph.
+
+Two flavor for such arguments are possible: positional parameters and parameter map.
+
+The actual argument values will be recursively loaded using the loader registry itself.
+
+Note that the arguments loader cannot be registered with the registry because selection is based on an
+`rdf:type` which is not available when defining the triples (check the exampels below). For that reason
+the loader must always be called directly and it is the caller's responsibility to select the correct
+RDF node. Hence, the `code:arguments` is just used as convention and not really mandatory.
+
+#### Positional parameters
+
+To load positional parameters the graph, simply define them as an `rdf:List`.
+
+```turtle
+@prefix code: <https://code.described.at/>
+
+<urn:call:string#startsWith> 
+  code:arguments ( "a" 5 ).
+```
+
+Executing the code below against the above triples will return an array containing the values
+`[ "a" "5" ]`.
+
+The quotes around 5 is no mistake. The loader currently returns a raw literal value from RDF, disregarding
+its datatype.
+
+
+```js
+const cf = require('clownface')
+const rdf = require('rdf-ext')
+const loadArguments = require('rdf-native-loader-code/arguments')
+const registry = require('./registry')
+const dataset = require('./dataset')
+
+const parentNode = rdf.namedNode('urn:call:string#startsWith')
+const argumentsProp = rdf.namedNode('https://code.described.at/arguments')
+
+const argumentsArray = loadArguments(
+  cf(dataset).node(parentNode).out(argumentsProp), 
+  {
+    loaderRegistry: registry
+  })
+```
+
+#### Named parameters
+
+Instead of relying on the order of parameters, the loader also out-of-the-box supports
+loading of an argument map. Such arguments are declared as name/value pairs.
+
+```turtle
+@prefix code: <https://code.described.at/>
+
+<urn:call:string#startsWith> 
+  code:arguments [
+    code:name "first"; code: value "foo"
+  ], [
+    code:name "second"; code: value "bar"
+  ] .
+```
+
+Executing the code below against the above triples will return an object containing the values
+
+```json
+[
+  {
+    "first": "foo",
+    "second": "bar"
+  }
+]
+```
+
+To make this method consistent with the positional flavor, the object will actually be wrapped
+in an array as presented above. 
+
+```js
+const cf = require('clownface')
+const rdf = require('rdf-ext')
+const loadArguments = require('rdf-native-loader-code/arguments')
+const registry = require('./registry')
+const dataset = require('./dataset')
+
+const parentNode = rdf.namedNode('urn:call:string#startsWith')
+const argumentsProp = rdf.namedNode('https://code.described.at/arguments')
+
+const argumentsObject = loadArguments(
+  cf(dataset).node(parentNode).out(argumentsProp),
+  {
+    loaderRegistry: registry
+  })
+```

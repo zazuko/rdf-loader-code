@@ -1,5 +1,5 @@
 @prefix code: <https://code.described.at/> .
 
 <http://example.com/> code:arguments (
-  "a" "b"
+  "a" 5
 ) .

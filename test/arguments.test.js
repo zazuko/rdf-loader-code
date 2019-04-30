@@ -71,9 +71,11 @@ describe('arguments loader', () => {
       // then
       assert(loaderRegistry.load.calledWith(
         sinon.match.object,
-        options.context,
-        options.variables,
-        options.basePath
+        {
+          context: options.context,
+          variables: options.variables,
+          basePath: options.basePath
+        }
       ))
     })
   })
@@ -133,9 +135,11 @@ describe('arguments loader', () => {
       // then
       assert(loaderRegistry.load.calledWith(
         sinon.match.object,
-        options.context,
-        options.variables,
-        options.basePath
+        {
+          context: options.context,
+          variables: options.variables,
+          basePath: options.basePath
+        }
       ))
     })
   })

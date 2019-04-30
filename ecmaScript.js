@@ -2,7 +2,7 @@ const cf = require('clownface')
 const iriRequire = require('./iriRequire')
 const { code } = require('./namespaces')
 
-function parseLiteral (node, context) {
+function parseLiteral (node, { context }) {
   if (node.datatype.equals(code('EcmaScript'))) {
     return (function () { return eval(`(${node.value})`) }).call(context) // eslint-disable-line no-eval,no-extra-parens
   }

@@ -45,6 +45,19 @@ describe('ecmaScript loader', () => {
       expect(result).toBe('abc')
     })
 
+    test('should use the given context', () => {
+      // given
+      // eslint-disable-next-line no-template-curly-in-string
+      const node = rdf.literal('who => `Hello ${this.who}`', code('EcmaScript'))
+
+      // when
+      const func = loader(node, dataset, { context: { who: 'world' } })
+
+      // then
+      const result = func('world')
+      expect(result).toBe('Hello world')
+    })
+
     test('should throw if node does not have correct datatype', () => {
       // given
       const node = rdf.literal("() => 'nothing'", code('unrecognized'))

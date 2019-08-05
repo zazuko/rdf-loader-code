@@ -8,8 +8,8 @@ to be executed in their programs.
 Currently must be installed from git
 
 ```
-npm i --save https://github.com/zazuko/rdf-loader-code
-npm i --save https://github.com/zazuko/rdf-loaders-registry
+npm i --save rdf-loader-code
+npm i --save rdf-loaders-registry
 ```
 
 Somewhere at the beginning of your code, register the loaders

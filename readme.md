@@ -8,16 +8,16 @@ to be executed in their programs.
 Currently must be installed from git
 
 ```
-npm i --save https://github.com/zazuko/rdf-native-loader-code
-npm i --save https://github.com/zazuko/rdf-native-loader
+npm i --save rdf-loader-code
+npm i --save rdf-loaders-registry
 ```
 
 Somewhere at the beginning of your code, register the loaders
 
 ```js
-const LoaderRegistry = require('rdf-native-loader')
-const EcmaScriptLoader = require('rdf-native-loader-code/ecmaScript')
-const EcmaScriptLiteralLoader = require('rdf-native-loader-code/ecmaScriptLiteral')
+const LoaderRegistry = require('rdf-loaders-registry')
+const EcmaScriptLoader = require('rdf-loader-code/ecmaScript')
+const EcmaScriptLiteralLoader = require('rdf-loader-code/ecmaScriptLiteral')
 
 const registry = new LoaderRegistry()
 
@@ -185,7 +185,7 @@ its datatype.
 ```js
 const cf = require('clownface')
 const rdf = require('rdf-ext')
-const loadArguments = require('rdf-native-loader-code/arguments')
+const loadArguments = require('rdf-loader-code/arguments')
 const registry = require('./registry')
 const dataset = require('./dataset')
 
@@ -232,7 +232,7 @@ in an array as presented above.
 ```js
 const cf = require('clownface')
 const rdf = require('rdf-ext')
-const loadArguments = require('rdf-native-loader-code/arguments')
+const loadArguments = require('rdf-loader-code/arguments')
 const registry = require('./registry')
 const dataset = require('./dataset')
 

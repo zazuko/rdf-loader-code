@@ -1,9 +1,13 @@
 const cf = require('clownface')
 const ns = require('./namespaces')
 
+function isList (node) {
+  return node.out(ns.rdf.first).terms.length === 1
+}
+
 async function parseArguments (args, options) {
   // is it a list?
-  if (args.out(ns.rdf.first).terms.length === 1) {
+  if (isList(args)) {
     return Promise.all([...args.list()].map(arg => parseArgument(arg, options)))
   }
 
@@ -31,6 +35,11 @@ async function parseArgument (arg, { context, variables, basePath, loaderRegistr
 
   if (arg.term.termType === 'Literal') {
     return arg.value
+  }
+
+  if (isList(arg)) {
+    // if it's a list, iterate over each item and run the parse argument logic on it
+    return Promise.all([...arg.list()].map(item => parseArgument(item, { context, variables, basePath, loaderRegistry })))
   }
 
   return arg

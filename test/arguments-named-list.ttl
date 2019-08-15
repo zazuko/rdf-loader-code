@@ -1,0 +1,7 @@
+@prefix code: <https://code.described.at/> .
+
+<http://example.com/> code:arguments [
+  code:name "foo"; code:value "bar"
+], [
+  code:name "a"; code:value ("b" "c")
+].

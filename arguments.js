@@ -7,7 +7,6 @@ function isList (node) {
 
 async function parseArguments (args, options) {
   // is it a list?
-  // if (args.out(ns.rdf.first).terms.length === 1) {
   if (isList(args)) {
     return Promise.all([...args.list()].map(arg => parseArgument(arg, options)))
   }

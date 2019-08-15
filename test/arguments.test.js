@@ -118,6 +118,24 @@ describe('arguments loader', () => {
       }])
     })
 
+    test('should support array values', async () => {
+      // given
+      const options = {
+        loaderRegistry
+      }
+      const dataset = await loadDataset('./arguments-named-list.ttl')
+      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
+
+      // when
+      const result = await loader(args, dataset, options)
+
+      // then
+      expect(result).toEqual([{
+        'foo': 'bar',
+        'a': ['b', 'c']
+      }])
+    })
+
     test('should forward options to loaderRegistry', async () => {
       // given
       const options = {

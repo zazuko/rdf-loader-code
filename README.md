@@ -29,7 +29,7 @@ module.exports = registry
 
 ## Usage
 
-All examples below assume that the `./dataset` module exports a [`RDF/JS` dataset](https://github.com/rdfjs/dataset-spec).
+All examples below assume that the `./dataset` module exports a [`RDF/JS` dataset](https://rdf.js.org/dataset-spec/).
 That dataset would contain the triples presented in the respective turtle snippet.
 The `./registry` module is assumed to be implemented as shown in the `Installation` section above.
 

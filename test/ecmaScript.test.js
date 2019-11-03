@@ -66,22 +66,22 @@ describe('ecmaScript loader', () => {
   describe('loading from node:', () => {
     test('should return top export', () => {
       // given
-      // <operation> code:link <node:rdf-ext#namedNode>
+      // <operation> code:link <node:@rdfjs/data-model#namedNode>
       const node = def.node(example('operation'))
-      node.addOut(ns.code.link, rdf.namedNode('node:rdf-ext#namedNode'))
+      node.addOut(ns.code.link, rdf.namedNode('node:@rdfjs/data-model#namedNode'))
 
       // when
       const func = loader({ term: node.term, dataset: node.dataset })
 
       // then
-      expect(func.name).toBe('namedNode')
+      expect(typeof func).toBe('function')
     })
 
     test('should return correct function if using dot notation', () => {
       // given
-      // <operation> code:link <node:rdf-ext#namedNode.name>
+      // <operation> code:link <node:@rdfjs/data-model#namedNode.name>
       const node = def.node(example('operation'))
-      node.addOut(ns.code.link, rdf.namedNode('node:rdf-ext#namedNode.name'))
+      node.addOut(ns.code.link, rdf.namedNode('node:@rdfjs/data-model#namedNode.name'))
 
       // when
       const str = loader({ term: node.term, dataset: node.dataset })

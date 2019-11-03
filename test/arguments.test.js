@@ -1,19 +1,17 @@
-/* global describe, test, beforeEach */
+/* global beforeEach, describe, expect, test */
+
 const createReadStream = require('fs').createReadStream
-const cf = require('clownface')
 const path = require('path')
-const expect = require('expect')
-const assert = require('assert')
-const rdf = require('rdf-ext')
+const rdf = { ...require('@rdfjs/data-model'), ...require('@rdfjs/dataset') }
 const Parser = require('@rdfjs/parser-n3')
+const { fromStream } = require('rdf-dataset-ext')
 const sinon = require('sinon')
 const loader = require('../arguments')
-const ns = require('../namespaces')
 
 const parser = new Parser()
 
 describe('arguments loader', () => {
-  const rootNode = rdf.namedNode('http://example.com/')
+  const term = rdf.namedNode('http://example.com/')
   let loaderRegistry
 
   beforeEach(() => {
@@ -25,14 +23,10 @@ describe('arguments loader', () => {
   describe('loading from rdf:List', () => {
     test('should fall back to verbatim literal value', async () => {
       // given
-      const options = {
-        loaderRegistry
-      }
       const dataset = await loadDataset('./arguments-list.ttl')
-      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
 
       // when
-      const result = await loader(args, dataset, options)
+      const result = await loader({ term, dataset }, { loaderRegistry })
 
       // then
       expect(result).toEqual(['a', '5'])
@@ -40,15 +34,11 @@ describe('arguments loader', () => {
 
     test('should use loaders to load values', async () => {
       // given
-      const options = {
-        loaderRegistry
-      }
       const dataset = await loadDataset('./arguments-list.ttl')
-      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
       loaderRegistry.load.callsFake((arg) => arg.value.toUpperCase())
 
       // when
-      const result = await loader(args, dataset, options)
+      const result = await loader({ term, dataset }, { loaderRegistry })
 
       // then
       expect(result).toEqual(['A', '5'])
@@ -63,76 +53,63 @@ describe('arguments loader', () => {
         basePath: '/some/path'
       }
       const dataset = await loadDataset('./arguments-list.ttl')
-      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
 
       // when
-      await loader(args, dataset, options)
+      await loader({ term, dataset }, options)
 
       // then
-      assert(loaderRegistry.load.calledWith(
+      expect(loaderRegistry.load.calledWith(
         sinon.match.object,
         {
           context: options.context,
           variables: options.variables,
           basePath: options.basePath
         }
-      ))
+      )).toBe(true)
     })
   })
 
   describe('loading from set of name/value pairs', () => {
     test('should fall back to verbatim literal value', async () => {
       // given
-      const options = {
-        loaderRegistry
-      }
       const dataset = await loadDataset('./arguments-named.ttl')
-      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
 
       // when
-      const result = await loader(args, dataset, options)
+      const result = await loader({ term, dataset }, { loaderRegistry })
 
       // then
       expect(result).toEqual([{
-        'foo': 'bar',
-        'a': 'b'
+        foo: 'bar',
+        a: 'b'
       }])
     })
 
     test('should use loaders to load values', async () => {
       // given
-      const options = {
-        loaderRegistry
-      }
       const dataset = await loadDataset('./arguments-named.ttl')
-      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
       loaderRegistry.load.callsFake((arg) => arg.value.toUpperCase())
 
       // when
-      const result = await loader(args, dataset, options)
+      const result = await loader({ term, dataset }, { loaderRegistry })
 
       // then
       expect(result).toEqual([{
-        'foo': 'BAR',
-        'a': 'B'
+        foo: 'BAR',
+        a: 'B'
       }])
     })
 
     test('should support array values', async () => {
       // given
-      const options = {
-        loaderRegistry
-      }
       const dataset = await loadDataset('./arguments-named-list.ttl')
-      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
 
       // when
-      const result = await loader(args, dataset, options)
+      const result = await loader({ term, dataset }, { loaderRegistry })
 
       // then
       expect(result).toEqual([{
-        'foo': 'bar',
-        'a': ['b', 'c']
+        foo: 'bar',
+        a: ['b', 'c']
       }])
     })
 
@@ -145,29 +122,25 @@ describe('arguments loader', () => {
         basePath: '/some/path'
       }
       const dataset = await loadDataset('./arguments-named.ttl')
-      const args = cf(dataset).node(rootNode).out(ns.code.arguments)
 
       // when
-      await loader(args, dataset, options)
+      await loader({ term, dataset }, options)
 
       // then
-      assert(loaderRegistry.load.calledWith(
+      expect(loaderRegistry.load.calledWith(
         sinon.match.object,
         {
           context: options.context,
           variables: options.variables,
           basePath: options.basePath
         }
-      ))
+      )).toBe(true)
     })
   })
 })
 
 async function loadDataset (filename) {
-  const dataset = rdf.dataset()
-
   const datasetFileStream = createReadStream(path.join(__dirname, filename))
-  await dataset.import(parser.import(datasetFileStream))
 
-  return dataset
+  return fromStream(rdf.dataset(), parser.import(datasetFileStream))
 }

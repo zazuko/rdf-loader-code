@@ -5,7 +5,7 @@ to be executed in their programs.
 
 ## Installation
 
-Currently must be installed from git
+The code loader and the loader registry can be installed with the following lines:  
 
 ```
 npm i --save rdf-loader-code
@@ -53,10 +53,10 @@ const rdf = require('rdf-ext')
 const registry = require('./registry')
 const dataset = require('./dataset')
 
-const parentNode = rdf.namedNode('urn:example:node')
+const term = rdf.namedNode('urn:example:node')
 const implementedBy = rdf.namedNode('https://code.described.at/implementedBy')
 
-const createReadStream = registry.load(cf(dataset).node(parentNode).out(implementedBy))
+const createReadStream = registry.load(cf({ term, dataset }).out(implementedBy))
 ```
 
 ### JS code loaded from source file
@@ -79,11 +79,11 @@ const rdf = require('rdf-ext')
 const registry = require('./registry')
 const dataset = require('./dataset')
 
-const parentNode = rdf.namedNode('urn:example:node')
+const term = rdf.namedNode('urn:example:node')
 const implementedBy = rdf.namedNode('https://code.described.at/implementedBy')
 
 const myCode = registry.load(
-  cf(dataset).node(parentNode).out(implementedBy),
+  cf({ term, dataset }).out(implementedBy),
   {
     basePath: process.cwd() // required to resolve relative paths
   })
@@ -111,10 +111,10 @@ const rdf = require('rdf-ext')
 const registry = require('./registry')
 const dataset = require('./dataset')
 
-const parentNode = rdf.namedNode('urn:example:node')
+const term = rdf.namedNode('urn:example:node')
 const implementedBy = rdf.namedNode('https://code.described.at/implementedBy')
 
-const filterFunc = registry.load(cf(dataset).node(parentNode).out(implementedBy))
+const filterFunc = registry.load(cf({ term, dataset }).out(implementedBy))
 ```
 
 ### JS template string literal
@@ -137,14 +137,14 @@ const rdf = require('rdf-ext')
 const registry = require('./registry')
 const dataset = require('./dataset')
 
-const parentNode = rdf.namedNode('urn:example:node')
+const term = rdf.namedNode('urn:example:node')
 const implementedBy = rdf.namedNode('https://code.described.at/implementedBy')
 
 const variables = new Map()
 variables.set('name', 'World')
 
 const helloString = registry.load(
-  cf(dataset).node(parentNode).out(implementedBy),
+  cf({ term, dataset }).out(implementedBy),
   {
     variables
   })
@@ -162,7 +162,7 @@ The actual argument values will be recursively loaded using the loader registry 
 Note that the arguments loader cannot be registered with the registry because selection is based on an
 `rdf:type` which is not available when defining the triples (check the exampels below). For that reason
 the loader must always be called directly and it is the caller's responsibility to select the correct
-RDF node. Hence, the `code:arguments` is just used as convention and not really mandatory.
+RDF node which contains the `code:arguments` property.
 
 #### Positional parameters
 
@@ -189,11 +189,10 @@ const loadArguments = require('rdf-loader-code/arguments')
 const registry = require('./registry')
 const dataset = require('./dataset')
 
-const parentNode = rdf.namedNode('urn:call:string#startsWith')
-const argumentsProp = rdf.namedNode('https://code.described.at/arguments')
+const term = rdf.namedNode('urn:call:string#startsWith')
 
 const argumentsArray = loadArguments(
-  cf(dataset).node(parentNode).out(argumentsProp), 
+  cf({ term, dataset }), 
   {
     loaderRegistry: registry
   })
@@ -236,11 +235,10 @@ const loadArguments = require('rdf-loader-code/arguments')
 const registry = require('./registry')
 const dataset = require('./dataset')
 
-const parentNode = rdf.namedNode('urn:call:string#startsWith')
-const argumentsProp = rdf.namedNode('https://code.described.at/arguments')
+const term = rdf.namedNode('urn:call:string#startsWith')
 
 const argumentsObject = loadArguments(
-  cf(dataset).node(parentNode).out(argumentsProp),
+  cf({ term, dataset }),
   {
     loaderRegistry: registry
   })

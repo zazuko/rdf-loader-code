@@ -5,7 +5,7 @@ const isUrl = new RegExp('^[a-z]*://')
 
 function parseIri (iri) {
   if (isUrl.test(iri)) {
-    return url.parse(iri)
+    return url.parse(iri) // eslint-disable-line node/no-deprecated-api
   }
 
   const colonIndex = iri.indexOf(':')

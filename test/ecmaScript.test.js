@@ -1,31 +1,27 @@
-/* global describe, test, beforeEach */
+/* global beforeEach, describe, expect, test */
+
 const cf = require('clownface')
-const rdf = require('rdf-ext')
-const expect = require('expect')
+const rdf = { ...require('@rdfjs/data-model'), ...require('@rdfjs/dataset') }
 const loader = require('../ecmaScript')
 const namespace = require('@rdfjs/namespace')
-const { code } = require('../namespaces')
+const ns = require('../namespaces')
 
 describe('ecmaScript loader', () => {
   const example = namespace('http://example.org/pipeline#')
-  let dataset
   let def
-  const context = {
-  }
 
   beforeEach(async () => {
-    dataset = rdf.dataset()
-    def = cf(dataset, rdf.namedNode('http://example.com/'))
+    def = cf({ term: rdf.namedNode('http://example.com/'), dataset: rdf.dataset() })
   })
 
   describe('loading literal', () => {
     test('should return function parsed from value', () => {
       // given
       // eslint-disable-next-line no-template-curly-in-string
-      const node = rdf.literal('who => `Hello ${who}`', code('EcmaScript'))
+      const term = rdf.literal('who => `Hello ${who}`', ns.code.EcmaScript)
 
       // when
-      const func = loader(node, dataset, context)
+      const func = loader({ term, dataset: rdf.dataset() })
 
       // then
       const result = func('world')
@@ -35,10 +31,10 @@ describe('ecmaScript loader', () => {
     test('should accept object literals', () => {
       // given
       // eslint-disable-next-line no-template-curly-in-string
-      const node = rdf.literal('{a: (b) => `a${b}c`}', code('EcmaScript'))
+      const term = rdf.literal('{a: (b) => `a${b}c`}', ns.code.EcmaScript)
 
       // when
-      const objectLiteral = loader(node, dataset, context)
+      const objectLiteral = loader({ term, dataset: rdf.dataset() })
 
       // then
       const result = objectLiteral.a('b')
@@ -48,10 +44,10 @@ describe('ecmaScript loader', () => {
     test('should use the given context', () => {
       // given
       // eslint-disable-next-line no-template-curly-in-string
-      const node = rdf.literal('who => `Hello ${this.who}`', code('EcmaScript'))
+      const term = rdf.literal('who => `Hello ${this.who}`', ns.code.EcmaScript)
 
       // when
-      const func = loader(node, dataset, { context: { who: 'world' } })
+      const func = loader({ term, dataset: rdf.dataset() }, { context: { who: 'world' } })
 
       // then
       const result = func('world')
@@ -60,10 +56,10 @@ describe('ecmaScript loader', () => {
 
     test('should throw if node does not have correct datatype', () => {
       // given
-      const node = rdf.literal("() => 'nothing'", code('unrecognized'))
+      const term = rdf.literal("() => 'nothing'", ns.code.unrecognized)
 
       // then
-      expect(() => loader(node)).toThrow()
+      expect(() => loader({ term, dataset: rdf.dataset })).toThrow()
     })
   })
 
@@ -72,10 +68,10 @@ describe('ecmaScript loader', () => {
       // given
       // <operation> code:link <node:rdf-ext#namedNode>
       const node = def.node(example('operation'))
-      node.addOut(code('link'), rdf.namedNode('node:rdf-ext#namedNode'))
+      node.addOut(ns.code.link, rdf.namedNode('node:rdf-ext#namedNode'))
 
       // when
-      const func = loader(node.term, dataset, { context })
+      const func = loader({ term: node.term, dataset: node.dataset })
 
       // then
       expect(func.name).toBe('namedNode')
@@ -85,10 +81,10 @@ describe('ecmaScript loader', () => {
       // given
       // <operation> code:link <node:rdf-ext#namedNode.name>
       const node = def.node(example('operation'))
-      node.addOut(code('link'), rdf.namedNode('node:rdf-ext#namedNode.name'))
+      node.addOut(ns.code.link, rdf.namedNode('node:rdf-ext#namedNode.name'))
 
       // when
-      const str = loader(node.term, dataset, { context })
+      const str = loader({ term: node.term, dataset: node.dataset })
 
       // then
       expect(typeof str).toBe('string')
@@ -100,10 +96,10 @@ describe('ecmaScript loader', () => {
       // given
       // <operation> code:link <file:foobar>
       const node = def.node(example('operation'))
-      node.addOut(code('link'), rdf.namedNode('file:foobar'))
+      node.addOut(ns.code.link, rdf.namedNode('file:foobar'))
 
       // when
-      const value = loader(node.term, dataset, { context, basePath: __dirname })
+      const value = loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 
       // then
       expect(value.foo.foo).toBe('bar')
@@ -113,10 +109,10 @@ describe('ecmaScript loader', () => {
       // given
       // <operation> code:link <file:foobar.foo>
       const node = def.node(example('operation'))
-      node.addOut(code('link'), rdf.namedNode('file:foobar#foo.foo'))
+      node.addOut(ns.code.link, rdf.namedNode('file:foobar#foo.foo'))
 
       // when
-      const foo = loader(node.term, dataset, { context, basePath: __dirname })
+      const foo = loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 
       // then
       expect(foo).toBe('bar')

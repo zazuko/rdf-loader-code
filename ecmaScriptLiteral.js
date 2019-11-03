@@ -1,16 +1,16 @@
 const evalTemplateLiteral = require('./evalTemplateLiteral')
-const { code } = require('./namespaces')
+const ns = require('./namespaces')
 
-function loader (node, dataset, { context, variables }) {
-  if (!(node.termType !== 'Literal' || !node.datatype.equals(code('EcmaScriptTemplateLiteral')))) {
-    return evalTemplateLiteral(node.value, { context, variables })
+function loader ({ term }, { context, variables } = {}) {
+  if (!(term.termType !== 'Literal' || !term.datatype.equals(ns.code('EcmaScriptTemplateLiteral')))) {
+    return evalTemplateLiteral(term.value, { context, variables })
   }
 
-  throw new Error(`Cannot load ES6 literal from node ${node}`)
+  throw new Error(`Cannot load ES6 literal from term ${term.value}`)
 }
 
 loader.register = registry => {
-  registry.registerLiteralLoader(code('EcmaScriptTemplateLiteral'), loader)
+  registry.registerLiteralLoader(ns.code('EcmaScriptTemplateLiteral'), loader)
 }
 
 module.exports = loader

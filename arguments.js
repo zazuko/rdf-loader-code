@@ -29,7 +29,7 @@ async function parseArguments (args, options) {
 async function parseArgument (arg, { context, variables, basePath, loaderRegistry }) {
   const code = await loaderRegistry.load(arg, { context, variables, basePath })
 
-  if (code) {
+  if (typeof code !== 'undefined') {
     return code
   }
 

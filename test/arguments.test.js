@@ -32,6 +32,21 @@ describe('arguments loader', () => {
       expect(result).toEqual(['a', '5'])
     })
 
+    test('should handle boolean false, but not undefined values from loaders', async () => {
+      // given
+      const dataset = await loadDataset('./arguments-list.ttl')
+      const values = [undefined, '']
+      const loaderRegistry = {
+        load: () => values.shift()
+      }
+
+      // when
+      const result = await loader({ term, dataset }, { loaderRegistry })
+
+      // then
+      expect(result).toEqual(['a', ''])
+    })
+
     test('should use loaders to load values', async () => {
       // given
       const dataset = await loadDataset('./arguments-list.ttl')

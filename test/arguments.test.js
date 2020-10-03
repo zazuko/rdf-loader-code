@@ -1,135 +1,120 @@
-/* global beforeEach, describe, expect, test */
-
-const createReadStream = require('fs').createReadStream
-const path = require('path')
+const { deepStrictEqual, strictEqual } = require('assert')
+const { describe, it } = require('mocha')
 const rdf = { ...require('@rdfjs/data-model'), ...require('@rdfjs/dataset') }
-const Parser = require('@rdfjs/parser-n3')
-const { fromStream } = require('rdf-dataset-ext')
-const sinon = require('sinon')
+const loadDataset = require('./support/loadDataset')
 const loader = require('../arguments')
 
-const parser = new Parser()
+const dummyLoaderRegistry = {
+  load: () => undefined
+}
 
 describe('arguments loader', () => {
   const term = rdf.namedNode('http://example.com/')
-  let loaderRegistry
-
-  beforeEach(() => {
-    loaderRegistry = {
-      load: sinon.stub()
-    }
-  })
 
   describe('loading from rdf:List', () => {
-    test('should fall back to verbatim literal value', async () => {
-      // given
+    it('should fall back to verbatim literal value', async () => {
       const dataset = await loadDataset('./arguments-list.ttl')
 
-      // when
-      const result = await loader({ term, dataset }, { loaderRegistry })
+      const result = await loader({ term, dataset }, { loaderRegistry: dummyLoaderRegistry })
 
-      // then
-      expect(result).toEqual(['a', '5'])
+      deepStrictEqual(result, ['a', '5'])
     })
 
-    test('should handle boolean false, but not undefined values from loaders', async () => {
-      // given
+    it('should handle boolean false, but not undefined values from loaders', async () => {
       const dataset = await loadDataset('./arguments-list.ttl')
       const values = [undefined, '']
       const loaderRegistry = {
         load: () => values.shift()
       }
 
-      // when
       const result = await loader({ term, dataset }, { loaderRegistry })
 
-      // then
-      expect(result).toEqual(['a', ''])
+      deepStrictEqual(result, ['a', ''])
     })
 
-    test('should use loaders to load values', async () => {
-      // given
+    it('should use loaders to load values', async () => {
       const dataset = await loadDataset('./arguments-list.ttl')
-      loaderRegistry.load.callsFake((arg) => arg.value.toUpperCase())
+      const loaderRegistry = {
+        load: ptr => ptr.value.toUpperCase()
+      }
 
-      // when
       const result = await loader({ term, dataset }, { loaderRegistry })
 
-      // then
-      expect(result).toEqual(['A', '5'])
+      deepStrictEqual(result, ['A', '5'])
     })
 
-    test('should forward options to loaderRegistry', async () => {
-      // given
+    it('should forward options to loaderRegistry', async () => {
+      let called = null
+
+      const loaderRegistry = {
+        load: (ptr, options) => {
+          called = options
+        }
+      }
+
       const options = {
         loaderRegistry,
         context: {},
         variables: new Map(),
         basePath: '/some/path'
       }
+
       const dataset = await loadDataset('./arguments-list.ttl')
 
-      // when
       await loader({ term, dataset }, options)
 
-      // then
-      expect(loaderRegistry.load.calledWith(
-        sinon.match.object,
-        {
-          context: options.context,
-          variables: options.variables,
-          basePath: options.basePath
-        }
-      )).toBe(true)
+      for (const key of ['basePath', 'context', 'variable']) {
+        strictEqual(called[key], options[key])
+      }
     })
   })
 
   describe('loading from set of name/value pairs', () => {
-    test('should fall back to verbatim literal value', async () => {
-      // given
+    it('should fall back to verbatim literal value', async () => {
       const dataset = await loadDataset('./arguments-named.ttl')
 
-      // when
-      const result = await loader({ term, dataset }, { loaderRegistry })
+      const result = await loader({ term, dataset }, { loaderRegistry: dummyLoaderRegistry })
 
-      // then
-      expect(result).toEqual([{
+      deepStrictEqual(result, [{
         foo: 'bar',
         a: 'b'
       }])
     })
 
-    test('should use loaders to load values', async () => {
-      // given
+    it('should use loaders to load values', async () => {
       const dataset = await loadDataset('./arguments-named.ttl')
-      loaderRegistry.load.callsFake((arg) => arg.value.toUpperCase())
+      const loaderRegistry = {
+        load: ptr => ptr.value.toUpperCase()
+      }
 
-      // when
       const result = await loader({ term, dataset }, { loaderRegistry })
 
-      // then
-      expect(result).toEqual([{
+      deepStrictEqual(result, [{
         foo: 'BAR',
         a: 'B'
       }])
     })
 
-    test('should support array values', async () => {
-      // given
+    it('should support array values', async () => {
       const dataset = await loadDataset('./arguments-named-list.ttl')
 
-      // when
-      const result = await loader({ term, dataset }, { loaderRegistry })
+      const result = await loader({ term, dataset }, { loaderRegistry: dummyLoaderRegistry })
 
-      // then
-      expect(result).toEqual([{
+      deepStrictEqual(result, [{
         foo: 'bar',
         a: ['b', 'c']
       }])
     })
 
-    test('should forward options to loaderRegistry', async () => {
-      // given
+    it('should forward options to loaderRegistry', async () => {
+      let called = null
+
+      const loaderRegistry = {
+        load: (ptr, options) => {
+          called = options
+        }
+      }
+
       const options = {
         loaderRegistry,
         context: {},
@@ -138,24 +123,11 @@ describe('arguments loader', () => {
       }
       const dataset = await loadDataset('./arguments-named.ttl')
 
-      // when
       await loader({ term, dataset }, options)
 
-      // then
-      expect(loaderRegistry.load.calledWith(
-        sinon.match.object,
-        {
-          context: options.context,
-          variables: options.variables,
-          basePath: options.basePath
-        }
-      )).toBe(true)
+      for (const key of ['basePath', 'context', 'variable']) {
+        strictEqual(called[key], options[key])
+      }
     })
   })
 })
-
-async function loadDataset (filename) {
-  const datasetFileStream = createReadStream(path.join(__dirname, filename))
-
-  return fromStream(rdf.dataset(), parser.import(datasetFileStream))
-}

@@ -1,121 +1,92 @@
-/* global beforeEach, describe, expect, test */
-
-const cf = require('clownface')
+const { strictEqual, throws } = require('assert')
+const clownface = require('clownface')
+const { describe, it } = require('mocha')
 const rdf = { ...require('@rdfjs/data-model'), ...require('@rdfjs/dataset') }
 const loader = require('../ecmaScript')
 const namespace = require('@rdfjs/namespace')
 const ns = require('../namespaces')
 
+const example = namespace('http://example.org/')
+
 describe('ecmaScript loader', () => {
-  const example = namespace('http://example.org/pipeline#')
-  let def
-
-  beforeEach(async () => {
-    def = cf({ term: rdf.namedNode('http://example.com/'), dataset: rdf.dataset() })
-  })
-
   describe('loading literal', () => {
-    test('should return function parsed from value', () => {
-      // given
-      // eslint-disable-next-line no-template-curly-in-string
-      const term = rdf.literal('who => `Hello ${who}`', ns.code.EcmaScript)
+    it('should return function parsed from value', () => {
+      const term = rdf.literal('who => `Hello ${who}`', ns.code.EcmaScript) // eslint-disable-line no-template-curly-in-string
 
-      // when
       const func = loader({ term, dataset: rdf.dataset() })
 
-      // then
       const result = func('world')
-      expect(result).toBe('Hello world')
+      strictEqual(result, 'Hello world')
     })
 
-    test('should accept object literals', () => {
-      // given
-      // eslint-disable-next-line no-template-curly-in-string
-      const term = rdf.literal('{a: (b) => `a${b}c`}', ns.code.EcmaScript)
+    it('should accept object literals', () => {
+      const term = rdf.literal('{a: (b) => `a${b}c`}', ns.code.EcmaScript) // eslint-disable-line no-template-curly-in-string
 
-      // when
       const objectLiteral = loader({ term, dataset: rdf.dataset() })
 
-      // then
       const result = objectLiteral.a('b')
-      expect(result).toBe('abc')
+      strictEqual(result, 'abc')
     })
 
-    test('should use the given context', () => {
-      // given
-      // eslint-disable-next-line no-template-curly-in-string
-      const term = rdf.literal('who => `Hello ${this.who}`', ns.code.EcmaScript)
+    it('should use the given context', () => {
+      const term = rdf.literal('who => `Hello ${this.who}`', ns.code.EcmaScript) // eslint-disable-line no-template-curly-in-string
 
-      // when
       const func = loader({ term, dataset: rdf.dataset() }, { context: { who: 'world' } })
 
-      // then
       const result = func('world')
-      expect(result).toBe('Hello world')
+      strictEqual(result, 'Hello world')
     })
 
-    test('should throw if node does not have correct datatype', () => {
-      // given
+    it('should throw if node does not have correct datatype', () => {
       const term = rdf.literal("() => 'nothing'", ns.code.unrecognized)
 
-      // then
-      expect(() => loader({ term, dataset: rdf.dataset })).toThrow()
+      throws(() => {
+        loader({ term, dataset: rdf.dataset })
+      })
     })
   })
 
   describe('loading from node:', () => {
-    test('should return top export', () => {
-      // given
+    it('should return top export', () => {
       // <operation> code:link <node:@rdfjs/data-model#namedNode>
-      const node = def.node(example('operation'))
-      node.addOut(ns.code.link, rdf.namedNode('node:@rdfjs/data-model#namedNode'))
+      const node = clownface({ dataset: rdf.dataset(), term: example('operation') })
+        .addOut(ns.code.link, rdf.namedNode('node:@rdfjs/data-model#namedNode'))
 
-      // when
       const func = loader({ term: node.term, dataset: node.dataset })
 
-      // then
-      expect(typeof func).toBe('function')
+      strictEqual(typeof func, 'function')
     })
 
-    test('should return correct function if using dot notation', () => {
-      // given
+    it('should return correct function if using dot notation', () => {
       // <operation> code:link <node:@rdfjs/data-model#namedNode.name>
-      const node = def.node(example('operation'))
-      node.addOut(ns.code.link, rdf.namedNode('node:@rdfjs/data-model#namedNode.name'))
+      const node = clownface({ dataset: rdf.dataset(), term: example('operation') })
+        .addOut(ns.code.link, rdf.namedNode('node:@rdfjs/data-model#namedNode.name'))
 
-      // when
       const str = loader({ term: node.term, dataset: node.dataset })
 
-      // then
-      expect(typeof str).toBe('string')
+      strictEqual(typeof str, 'string')
     })
   })
 
   describe('loading from file:', () => {
-    test('should return default export', () => {
-      // given
+    it('should return default export', () => {
       // <operation> code:link <file:foobar>
-      const node = def.node(example('operation'))
-      node.addOut(ns.code.link, rdf.namedNode('file:foobar'))
+      const node = clownface({ dataset: rdf.dataset(), term: example('operation') })
+        .addOut(ns.code.link, rdf.namedNode('file:foobar'))
 
-      // when
       const value = loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 
-      // then
-      expect(value.foo.foo).toBe('bar')
+      strictEqual(value.foo.foo, 'bar')
     })
 
-    test('should return correct export if using hash and dot notation', () => {
-      // given
+    it('should return correct export if using hash and dot notation', () => {
       // <operation> code:link <file:foobar.foo>
-      const node = def.node(example('operation'))
-      node.addOut(ns.code.link, rdf.namedNode('file:foobar#foo.foo'))
+      const node = clownface({ dataset: rdf.dataset(), term: example('operation') })
+        .addOut(ns.code.link, rdf.namedNode('file:foobar#foo.foo'))
 
-      // when
       const foo = loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 
-      // then
-      expect(foo).toBe('bar')
+      strictEqual(foo, 'bar')
     })
   })
 })

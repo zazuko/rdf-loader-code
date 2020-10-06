@@ -1,4 +1,4 @@
-const { strictEqual } = require('assert')
+const { strictEqual, throws } = require('assert')
 const { describe, it } = require('mocha')
 const rdf = { ...require('@rdfjs/data-model'), ...require('@rdfjs/dataset') }
 const loader = require('../ecmaScriptLiteral')
@@ -17,14 +17,8 @@ describe('ecmaScriptTemplate loader', () => {
   it('should throw if node is not literal', () => {
     const term = rdf.namedNode('not:literal:node')
 
-    let error = null
-
-    try {
+    throws(() => {
       loader({ term, dataset: rdf.dataset() })
-    } catch (err) {
-      error = err
-    }
-
-    strictEqual(error instanceof Error, true)
+    })
   })
 })

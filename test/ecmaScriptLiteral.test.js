@@ -1,31 +1,24 @@
-/* global describe, expect, test */
-
+const { strictEqual, throws } = require('assert')
+const { describe, it } = require('mocha')
 const rdf = { ...require('@rdfjs/data-model'), ...require('@rdfjs/dataset') }
 const loader = require('../ecmaScriptLiteral')
 const ns = require('../namespaces')
 
 describe('ecmaScriptTemplate loader', () => {
-  test('should return string filled in with variables', () => {
-    // given
-    // eslint-disable-next-line no-template-curly-in-string
-    const term = rdf.literal('Hello ${hello}', ns.code.EcmaScriptTemplateLiteral)
+  it('should return string filled in with variables', () => {
+    const term = rdf.literal('Hello ${hello}', ns.code.EcmaScriptTemplateLiteral) // eslint-disable-line no-template-curly-in-string
     const variables = new Map([['hello', 'world']])
 
-    // when
     const string = loader({ term, dataset: rdf.dataset() }, { variables })
 
-    // then
-    expect(string).toBe('Hello world')
+    strictEqual(string, 'Hello world')
   })
 
-  test('should throw if node is not literal', () => {
-    // given
+  it('should throw if node is not literal', () => {
     const term = rdf.namedNode('not:literal:node')
 
-    // then
-    expect(() => {
-      // when
+    throws(() => {
       loader({ term, dataset: rdf.dataset() })
-    }).toThrow()
+    })
   })
 })

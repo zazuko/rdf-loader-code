@@ -14,6 +14,14 @@ describe('ecmaScriptTemplate loader', () => {
     strictEqual(string, 'Hello world')
   })
 
+  it('should not require additional arguments', () => {
+    const term = rdf.literal('Hello world', ns.code.EcmaScriptTemplateLiteral)
+
+    const string = loader({ term, dataset: rdf.dataset() })
+
+    strictEqual(string, 'Hello world')
+  })
+
   it('should throw if node is not literal', () => {
     const term = rdf.namedNode('not:literal:node')
 

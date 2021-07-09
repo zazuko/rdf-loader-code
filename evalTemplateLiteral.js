@@ -5,7 +5,7 @@
  * @param variables The parameters as key/values in an object
  * @returns string The result of the evaluation
  */
-function evalTemplateLiteral (content, { context, variables }) {
+function evalTemplateLiteral (content, { context = {}, variables = new Map() } = {}) {
   const keys = [...variables.keys()]
   const values = keys.map(key => variables.get(key))
   const template = Function(keys, `return \`${content}\``) // eslint-disable-line no-new-func

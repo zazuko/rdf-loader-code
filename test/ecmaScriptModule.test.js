@@ -1,7 +1,7 @@
 const { rejects, strictEqual } = require('assert')
 const clownface = require('clownface')
 const { describe, it } = require('mocha')
-const rdf = { ...require('@rdfjs/data-model'), ...require('@rdfjs/dataset') }
+const rdf = require('rdf-ext')
 const loader = require('../ecmaScriptModule')
 const ns = require('../namespaces')
 
@@ -55,7 +55,7 @@ describe('ecmaScriptModule', () => {
     it('should return async the loaded module from the given URL', async () => {
       const node = clownface({ dataset: rdf.dataset() })
         .blankNode()
-        .addOut(ns.code.link, rdf.namedNode(`file://${__dirname}/foobar.mjs`))
+        .addOut(ns.code.link, rdf.namedNode(`file://${__dirname}/foobar.mjs`)) // eslint-disable-line node/no-path-concat
 
       const value = await loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 
@@ -65,7 +65,7 @@ describe('ecmaScriptModule', () => {
     it('should use the hash to traverse the module content from the given URL using dots to separate levels', async () => {
       const node = clownface({ dataset: rdf.dataset() })
         .blankNode()
-        .addOut(ns.code.link, rdf.namedNode(`file://${__dirname}/foobar.mjs#foo.foo`))
+        .addOut(ns.code.link, rdf.namedNode(`file://${__dirname}/foobar.mjs#foo.foo`)) // eslint-disable-line node/no-path-concat
 
       const foo = await loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 

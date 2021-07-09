@@ -1,6 +1,6 @@
 const { strictEqual, throws } = require('assert')
 const { describe, it } = require('mocha')
-const rdf = { ...require('@rdfjs/data-model'), ...require('@rdfjs/dataset') }
+const rdf = require('rdf-ext')
 const loader = require('../ecmaScriptLiteral')
 const ns = require('../namespaces')
 

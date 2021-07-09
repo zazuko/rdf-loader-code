@@ -1,14 +1,9 @@
-const { createReadStream } = require('fs')
 const { resolve } = require('path')
-const rdf = require('@rdfjs/dataset')
-const Parser = require('@rdfjs/parser-n3')
-const { fromStream } = require('rdf-dataset-ext')
+const rdf = require('rdf-ext')
+const fromFile = require('rdf-utils-fs/fromFile.js')
 
 async function loadDataset (filename) {
-  const parser = new Parser()
-  const datasetFileStream = createReadStream(resolve(__dirname, '..', filename))
-
-  return fromStream(rdf.dataset(), parser.import(datasetFileStream))
+  return rdf.dataset().import(fromFile(resolve(__dirname, '..', filename)))
 }
 
 module.exports = loadDataset

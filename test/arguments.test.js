@@ -1,8 +1,8 @@
 const { deepStrictEqual, strictEqual } = require('assert')
 const { describe, it } = require('mocha')
-const rdf = { ...require('@rdfjs/data-model'), ...require('@rdfjs/dataset') }
-const loadDataset = require('./support/loadDataset')
+const rdf = require('rdf-ext')
 const loader = require('../arguments')
+const loadDataset = require('./support/loadDataset')
 
 const dummyLoaderRegistry = {
   load: () => undefined

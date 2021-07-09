@@ -1,9 +1,9 @@
 const { strictEqual, throws } = require('assert')
+const namespace = require('@rdfjs/namespace')
 const clownface = require('clownface')
 const { describe, it } = require('mocha')
-const rdf = { ...require('@rdfjs/data-model'), ...require('@rdfjs/dataset') }
+const rdf = require('rdf-ext')
 const loader = require('../ecmaScript')
-const namespace = require('@rdfjs/namespace')
 const ns = require('../namespaces')
 
 const example = namespace('http://example.org/')

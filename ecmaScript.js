@@ -4,7 +4,9 @@ const ns = require('./namespaces')
 
 function parseLiteral ({ term }, { context } = {}) {
   if (term.datatype.equals(ns.code('EcmaScript'))) {
-    return (function () { return eval(`(${term.value})`) }).call(context) // eslint-disable-line no-eval,no-extra-parens
+    return (function () {
+      return eval(`(${term.value})`) // eslint-disable-line no-eval,no-extra-parens
+    }.call(context))
   }
 
   throw new Error(`Cannot load ecmaScript code from term ${term.value}`)

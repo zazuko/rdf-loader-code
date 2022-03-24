@@ -208,9 +208,9 @@ loading of an argument map. Such arguments are declared as name/value pairs.
 
 <urn:call:string#startsWith> 
   code:arguments [
-    code:name "first"; code: value "foo"
+    code:name "first"; code:value "foo"
   ], [
-    code:name "second"; code: value "bar"
+    code:name "second"; code:value "bar"
   ] .
 ```
 

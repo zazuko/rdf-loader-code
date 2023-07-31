@@ -1,5 +1,5 @@
 module.exports = {
   foo: {
-    foo: 'bar'
-  }
+    foo: 'bar',
+  },
 }

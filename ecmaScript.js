@@ -2,7 +2,7 @@ const cf = require('clownface')
 const iriResolve = require('./lib/iriResolve')
 const ns = require('./namespaces')
 
-function parseLiteral ({ term }, { context } = {}) {
+function parseLiteral({ term }, { context } = {}) {
   if (term.datatype.equals(ns.code('EcmaScript'))) {
     return (function () {
       return eval(`(${term.value})`) // eslint-disable-line no-eval,no-extra-parens
@@ -12,7 +12,7 @@ function parseLiteral ({ term }, { context } = {}) {
   throw new Error(`Cannot load ecmaScript code from term ${term.value}`)
 }
 
-function parseNamedNode ({ term, dataset }, { basePath } = {}) {
+function parseNamedNode({ term, dataset }, { basePath } = {}) {
   const link = cf({ term, dataset }).out(ns.code('link'))
 
   if (link.term && link.term.termType !== 'NamedNode') {
@@ -31,7 +31,7 @@ function parseNamedNode ({ term, dataset }, { basePath } = {}) {
   return method.split('.').reduce((code, property) => code[property], code)
 }
 
-function loader ({ term, dataset }, options = {}) {
+function loader({ term, dataset }, options = {}) {
   if (term && term.termType === 'Literal') {
     return parseLiteral({ term, dataset }, options)
   }

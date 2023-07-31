@@ -1,7 +1,7 @@
 const evalTemplateLiteral = require('./evalTemplateLiteral')
 const ns = require('./namespaces')
 
-function loader ({ term }, { context, variables } = {}) {
+function loader({ term }, { context, variables } = {}) {
   if (!(term.termType !== 'Literal' || !term.datatype.equals(ns.code('EcmaScriptTemplateLiteral')))) {
     return evalTemplateLiteral(term.value, { context, variables })
   }

@@ -15,16 +15,16 @@ npm i --save rdf-loaders-registry
 Somewhere at the beginning of your code, register the loaders
 
 ```js
-const LoaderRegistry = require('rdf-loaders-registry')
-const EcmaScriptLoader = require('rdf-loader-code/ecmaScript')
-const EcmaScriptLiteralLoader = require('rdf-loader-code/ecmaScriptLiteral')
+import LoaderRegistry from 'rdf-loaders-registry'
+import EcmaScriptLoader from 'rdf-loader-code/ecmaScript.js'
+import EcmaScriptLiteralLoader from 'rdf-loader-code/ecmaScriptLiteral.js'
 
 const registry = new LoaderRegistry()
 
 EcmaScriptLoader.register(registry)
 EcmaScriptLiteralLoader.register(registry)
 
-module.exports = registry
+export default registry
 ```
 
 ## Usage
@@ -38,7 +38,7 @@ The `./registry` module is assumed to be implemented as shown in the `Installati
 This example is equivalent to calling `require('fs').createReadStream` 
 
 ```turtle
-@prefix code: <https://code.described.at/>
+@prefix code: <https://code.described.at/>.
 
 <urn:example:node> 
   code:implementedBy [
@@ -48,15 +48,14 @@ This example is equivalent to calling `require('fs').createReadStream`
 ```
 
 ```js
-const cf = require('clownface')
-const rdf = require('rdf-ext')
-const registry = require('./registry')
-const dataset = require('./dataset')
+import rdf from '@zazuko/env'
+import registry from './registry.js'
+import dataset from './dataset.js'
 
 const term = rdf.namedNode('urn:example:node')
 const implementedBy = rdf.namedNode('https://code.described.at/implementedBy')
 
-const createReadStream = registry.load(cf({ term, dataset }).out(implementedBy))
+const createReadStream = registry.load(rdf.clownface({ term, dataset }).out(implementedBy))
 ```
 
 ### JS code loaded from source file
@@ -64,26 +63,25 @@ const createReadStream = registry.load(cf({ term, dataset }).out(implementedBy))
 Similar to the above but loads the default export from a local `lib/myCode.js` file.
 
 ```turtle
-@prefix code: <https://code.described.at/>
+@prefix code: <https://code.described.at/>.
 
 <urn:example:node> 
   code:implementedBy [
-    a code:EcmaScript ;
-    code:link <file:lib/myCode>
+    a code:EcmaScriptModule ;
+    code:link <file:lib/myCode.js#default>
   ] .
 ```
 
 ```js
-const cf = require('clownface')
-const rdf = require('rdf-ext')
-const registry = require('./registry')
-const dataset = require('./dataset')
+import rdf from '@zazuko/env'
+import registry from './registry.js'
+import dataset from './dataset.js'
 
 const term = rdf.namedNode('urn:example:node')
 const implementedBy = rdf.namedNode('https://code.described.at/implementedBy')
 
 const myCode = registry.load(
-  cf({ term, dataset }).out(implementedBy),
+  rdf.clownface({ term, dataset }).out(implementedBy),
   {
     basePath: process.cwd() // required to resolve relative paths
   })
@@ -99,22 +97,21 @@ A piece of JS code can also be placed directly in the triples.
 This snippet shows how an `Array#filter` callback can be loaded from the dataset.
 
 ```turtle
-@prefix code: <https://code.described.at/>
+@prefix code: <https://code.described.at/>.
 
 <urn:example:node> 
   code:implementedBy "name => name.startsWith('A')"^^code:EcmaScript .
 ```
 
 ```js
-const cf = require('clownface')
-const rdf = require('rdf-ext')
-const registry = require('./registry')
-const dataset = require('./dataset')
+import rdf from '@zazuko/env'
+import registry from './registry.js'
+import dataset from './dataset.js'
 
 const term = rdf.namedNode('urn:example:node')
 const implementedBy = rdf.namedNode('https://code.described.at/implementedBy')
 
-const filterFunc = registry.load(cf({ term, dataset }).out(implementedBy))
+const filterFunc = registry.load(rdf.clownface({ term, dataset }).out(implementedBy))
 ```
 
 ### JS template string literal
@@ -123,7 +120,7 @@ A dedicated datatype can also be used to load a string based on a template liter
 the variables based on an optional parameter.
 
 ```turtle
-@prefix code: <https://code.described.at/>
+@prefix code: <https://code.described.at/>.
 
 <urn:example:node> 
   code:implementedBy "Hello ${name}"^^code:EcmaScriptTemplateLiteral .
@@ -132,10 +129,9 @@ the variables based on an optional parameter.
 To fill in the template string, a Map of variable must be passed to the loader.
 
 ```js
-const cf = require('clownface')
-const rdf = require('rdf-ext')
-const registry = require('./registry')
-const dataset = require('./dataset')
+import rdf from '@zazuko/env'
+import registry from './registry.js'
+import dataset from './dataset.js'
 
 const term = rdf.namedNode('urn:example:node')
 const implementedBy = rdf.namedNode('https://code.described.at/implementedBy')
@@ -144,7 +140,7 @@ const variables = new Map()
 variables.set('name', 'World')
 
 const helloString = registry.load(
-  cf({ term, dataset }).out(implementedBy),
+  rdf.clownface({ term, dataset }).out(implementedBy),
   {
     variables
   })
@@ -169,7 +165,7 @@ RDF node which contains the `code:arguments` property.
 To load positional parameters the graph, simply define them as an `rdf:List`.
 
 ```turtle
-@prefix code: <https://code.described.at/>
+@prefix code: <https://code.described.at/>.
 
 <urn:call:string#startsWith> 
   code:arguments ( "a" 5 ).
@@ -183,16 +179,15 @@ its datatype.
 
 
 ```js
-const cf = require('clownface')
-const rdf = require('rdf-ext')
-const loadArguments = require('rdf-loader-code/arguments')
-const registry = require('./registry')
-const dataset = require('./dataset')
+import rdf from '@zazuko/env'
+import loadArguments from 'rdf-loader-code/arguments.js'
+import registry from './registry.js'
+import dataset from './dataset.js'
 
 const term = rdf.namedNode('urn:call:string#startsWith')
 
 const argumentsArray = loadArguments(
-  cf({ term, dataset }), 
+  rdf.clownface({ term, dataset }), 
   {
     loaderRegistry: registry
   })
@@ -204,7 +199,7 @@ Instead of relying on the order of parameters, the loader also out-of-the-box su
 loading of an argument map. Such arguments are declared as name/value pairs.
 
 ```turtle
-@prefix code: <https://code.described.at/>
+@prefix code: <https://code.described.at/>.
 
 <urn:call:string#startsWith> 
   code:arguments [
@@ -229,16 +224,15 @@ To make this method consistent with the positional flavor, the object will actua
 in an array as presented above. 
 
 ```js
-const cf = require('clownface')
-const rdf = require('rdf-ext')
-const loadArguments = require('rdf-loader-code/arguments')
-const registry = require('./registry')
-const dataset = require('./dataset')
+import rdf from '@zazuko/env'
+import loadArguments from 'rdf-loader-code/arguments.js'
+import registry from './registry.js'
+import dataset from './dataset.js'
 
 const term = rdf.namedNode('urn:call:string#startsWith')
 
 const argumentsObject = loadArguments(
-  cf({ term, dataset }),
+  rdf.clownface({ term, dataset }),
   {
     loaderRegistry: registry
   })

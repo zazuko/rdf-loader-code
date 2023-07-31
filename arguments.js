@@ -1,5 +1,5 @@
-const cf = require('clownface')
-const ns = require('./namespaces')
+import clownface from 'clownface'
+import * as ns from './namespaces.js'
 
 function isList(node) {
   return node.out(ns.rdf('first')).terms.length === 1
@@ -45,8 +45,6 @@ async function parseArgument(arg, { context, variables, basePath, loaderRegistry
   return arg
 }
 
-async function loader({ term, dataset }, { property = ns.code('arguments'), ...options } = {}) {
-  return parseArguments(cf({ term, dataset }).out(property), options)
+export default async function loader({ term, dataset }, { property = ns.code('arguments'), ...options } = {}) {
+  return parseArguments(clownface({ term, dataset }).out(property), options)
 }
-
-module.exports = loader

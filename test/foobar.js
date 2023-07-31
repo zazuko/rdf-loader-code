@@ -1,5 +1,7 @@
-module.exports = {
-  foo: {
-    foo: 'bar',
-  },
+const foo = {
+  foo: 'bar',
+}
+
+export {
+  foo,
 }

@@ -1,8 +1,7 @@
-const { strictEqual, throws } = require('assert')
-const { describe, it } = require('mocha')
-const rdf = require('rdf-ext')
-const loader = require('../ecmaScriptLiteral')
-const ns = require('../namespaces')
+import { strictEqual, throws } from 'assert'
+import rdf from '@zazuko/env'
+import loader from '../ecmaScriptLiteral.js'
+import * as ns from '../namespaces.js'
 
 describe('ecmaScriptTemplate loader', () => {
   it('should return string filled in with variables', () => {

@@ -1,7 +1,7 @@
-const evalTemplateLiteral = require('./evalTemplateLiteral')
-const ns = require('./namespaces')
+import evalTemplateLiteral from './evalTemplateLiteral.js'
+import * as ns from './namespaces.js'
 
-function loader({ term }, { context, variables } = {}) {
+export default function loader({ term }, { context, variables } = {}) {
   if (!(term.termType !== 'Literal' || !term.datatype.equals(ns.code('EcmaScriptTemplateLiteral')))) {
     return evalTemplateLiteral(term.value, { context, variables })
   }
@@ -12,5 +12,3 @@ function loader({ term }, { context, variables } = {}) {
 loader.register = registry => {
   registry.registerLiteralLoader(ns.code('EcmaScriptTemplateLiteral'), loader)
 }
-
-module.exports = loader

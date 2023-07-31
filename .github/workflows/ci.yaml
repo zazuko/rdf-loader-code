@@ -15,7 +15,9 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: npm ci
       - run: npm test
-      - run: npm run coverage
+      - name: Codecov
+        uses: codecov/codecov-action@v3
+
   lint:
     runs-on: ubuntu-20.04
     steps:

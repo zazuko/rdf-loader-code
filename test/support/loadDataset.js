@@ -1,9 +1,10 @@
-const { resolve } = require('path')
-const rdf = require('rdf-ext')
-const fromFile = require('rdf-utils-fs/fromFile.js')
+import { resolve } from 'path'
+import url from 'url'
+import rdf from '@zazuko/env'
+import fromFile from 'rdf-utils-fs/fromFile.js'
+import fromStream from 'rdf-dataset-ext/fromStream.js'
 
-async function loadDataset(filename) {
-  return rdf.dataset().import(fromFile(resolve(__dirname, '..', filename)))
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
+export default async function loadDataset(filename) {
+  return fromStream(rdf.dataset(), fromFile(resolve(__dirname, '..', filename)))
 }
-
-module.exports = loadDataset

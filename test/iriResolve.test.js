@@ -1,6 +1,5 @@
-const { strictEqual, throws } = require('assert')
-const { describe, it } = require('mocha')
-const iriResolve = require('../lib/iriResolve')
+import { strictEqual, throws } from 'assert'
+import iriResolve from '../lib/iriResolve.js'
 
 describe('iriResolve', () => {
   it('should be a function', () => {

@@ -1,8 +1,8 @@
-const clownface = require('clownface')
-const iriResolve = require('./lib/iriResolve')
-const ns = require('./namespaces')
+import clownface from 'clownface'
+import iriResolve from './lib/iriResolve.js'
+import * as ns from './namespaces.js'
 
-async function loader({ term, dataset }, { basePath } = {}) {
+export default async function loader({ term, dataset }, { basePath } = {}) {
   const link = clownface({ term, dataset }).out(ns.code('link'))
 
   if (link.term && link.term.termType !== 'NamedNode') {
@@ -24,5 +24,3 @@ async function loader({ term, dataset }, { basePath } = {}) {
 loader.register = registry => {
   registry.registerNodeLoader(ns.code('EcmaScriptModule'), loader)
 }
-
-module.exports = loader

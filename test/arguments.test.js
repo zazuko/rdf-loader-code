@@ -1,8 +1,7 @@
-const { deepStrictEqual, strictEqual } = require('assert')
-const { describe, it } = require('mocha')
-const rdf = require('rdf-ext')
-const loader = require('../arguments')
-const loadDataset = require('./support/loadDataset')
+import { deepStrictEqual, strictEqual } from 'assert'
+import rdf from '@zazuko/env'
+import loader from '../arguments.js'
+import loadDataset from './support/loadDataset.js'
 
 const dummyLoaderRegistry = {
   load: () => undefined,

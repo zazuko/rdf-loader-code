@@ -1,4 +1,4 @@
-const namespace = require('@rdfjs/namespace')
+import namespace from '@rdfjs/namespace'
 
 /*
   Namespaces should be used with function call in the library like: ns.code('link')
@@ -6,7 +6,5 @@ const namespace = require('@rdfjs/namespace')
   In the test code, the namespaces can be used with the property like: ns.code.link
 */
 
-module.exports = {
-  code: namespace('https://code.described.at/'),
-  rdf: namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#'),
-}
+export const code = namespace('https://code.described.at/')
+export const rdf = namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')

@@ -1,12 +1,11 @@
-const { strictEqual, throws } = require('assert')
-const namespace = require('@rdfjs/namespace')
-const clownface = require('clownface')
-const { describe, it } = require('mocha')
-const rdf = require('rdf-ext')
-const loader = require('../ecmaScript')
-const ns = require('../namespaces')
+import { strictEqual, throws } from 'assert'
+import url from 'url'
+import rdf from '@zazuko/env'
+import loader from '../ecmaScript.js'
+import * as ns from '../namespaces.js'
 
-const example = namespace('http://example.org/')
+const example = rdf.namespace('http://example.org/')
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 describe('ecmaScript loader', () => {
   describe('loading literal', () => {
@@ -49,7 +48,7 @@ describe('ecmaScript loader', () => {
   describe('loading from node:', () => {
     it('should return top export', () => {
       // <operation> code:link <node:@rdfjs/data-model#namedNode>
-      const node = clownface({ dataset: rdf.dataset(), term: example('operation') })
+      const node = rdf.clownface({ term: example('operation') })
         .addOut(ns.code.link, rdf.namedNode('node:@rdfjs/data-model#namedNode'))
 
       const func = loader({ term: node.term, dataset: node.dataset })
@@ -59,7 +58,7 @@ describe('ecmaScript loader', () => {
 
     it('should return correct function if using dot notation', () => {
       // <operation> code:link <node:@rdfjs/data-model#namedNode.name>
-      const node = clownface({ dataset: rdf.dataset(), term: example('operation') })
+      const node = rdf.clownface({ term: example('operation') })
         .addOut(ns.code.link, rdf.namedNode('node:@rdfjs/data-model#namedNode.name'))
 
       const str = loader({ term: node.term, dataset: node.dataset })
@@ -71,8 +70,8 @@ describe('ecmaScript loader', () => {
   describe('loading from file:', () => {
     it('should return default export', () => {
       // <operation> code:link <file:foobar>
-      const node = clownface({ dataset: rdf.dataset(), term: example('operation') })
-        .addOut(ns.code.link, rdf.namedNode('file:foobar'))
+      const node = rdf.clownface({ term: example('operation') })
+        .addOut(ns.code.link, rdf.namedNode('file:foobar.cjs'))
 
       const value = loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 
@@ -81,8 +80,8 @@ describe('ecmaScript loader', () => {
 
     it('should return correct export if using hash and dot notation', () => {
       // <operation> code:link <file:foobar.foo>
-      const node = clownface({ dataset: rdf.dataset(), term: example('operation') })
-        .addOut(ns.code.link, rdf.namedNode('file:foobar#foo.foo'))
+      const node = rdf.clownface({ term: example('operation') })
+        .addOut(ns.code.link, rdf.namedNode('file:foobar.cjs#foo.foo'))
 
       const foo = loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 

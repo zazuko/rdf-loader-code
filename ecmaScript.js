@@ -1,6 +1,9 @@
-const cf = require('clownface')
-const iriResolve = require('./lib/iriResolve')
-const ns = require('./namespaces')
+import module from 'module'
+import clownface from 'clownface'
+import iriResolve from './lib/iriResolve.js'
+import * as ns from './namespaces.js'
+
+const require = module.createRequire(import.meta.url)
 
 function parseLiteral({ term }, { context } = {}) {
   if (term.datatype.equals(ns.code('EcmaScript'))) {
@@ -13,7 +16,7 @@ function parseLiteral({ term }, { context } = {}) {
 }
 
 function parseNamedNode({ term, dataset }, { basePath } = {}) {
-  const link = cf({ term, dataset }).out(ns.code('link'))
+  const link = clownface({ term, dataset }).out(ns.code('link'))
 
   if (link.term && link.term.termType !== 'NamedNode') {
     throw new Error(`Cannot load ecmaScript code from term ${term.value}`)
@@ -31,7 +34,7 @@ function parseNamedNode({ term, dataset }, { basePath } = {}) {
   return method.split('.').reduce((code, property) => code[property], code)
 }
 
-function loader({ term, dataset }, options = {}) {
+export default function loader({ term, dataset }, options = {}) {
   if (term && term.termType === 'Literal') {
     return parseLiteral({ term, dataset }, options)
   }
@@ -43,5 +46,3 @@ loader.register = registry => {
   registry.registerNodeLoader(ns.code('EcmaScript'), loader)
   registry.registerLiteralLoader(ns.code('EcmaScript'), loader)
 }
-
-module.exports = loader

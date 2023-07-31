@@ -1,9 +1,10 @@
-const { rejects, strictEqual } = require('assert')
-const clownface = require('clownface')
-const { describe, it } = require('mocha')
-const rdf = require('rdf-ext')
-const loader = require('../ecmaScriptModule')
-const ns = require('../namespaces')
+import { rejects, strictEqual } from 'assert'
+import * as url from 'url'
+import rdf from '@zazuko/env'
+import loader from '../ecmaScriptModule.js'
+import * as ns from '../namespaces.js'
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 describe('ecmaScriptModule', () => {
   it('should be a function', () => {
@@ -11,7 +12,7 @@ describe('ecmaScriptModule', () => {
   })
 
   it('should reject if there is no link', async () => {
-    const node = clownface({ dataset: rdf.dataset() })
+    const node = rdf.clownface()
       .blankNode()
 
     rejects(async () => {
@@ -20,7 +21,7 @@ describe('ecmaScriptModule', () => {
   })
 
   it('should reject if the link object is not a NamedNode', async () => {
-    const node = clownface({ dataset: rdf.dataset() })
+    const node = rdf.clownface()
       .blankNode()
       .addOut(ns.code.link, rdf.literal('node:@rdfjs/data-model'))
 
@@ -31,7 +32,7 @@ describe('ecmaScriptModule', () => {
 
   describe('node:', () => {
     it('should return async the loaded module', async () => {
-      const node = clownface({ dataset: rdf.dataset() })
+      const node = rdf.clownface()
         .blankNode()
         .addOut(ns.code.link, rdf.namedNode('node:@rdfjs/data-model'))
 
@@ -41,7 +42,7 @@ describe('ecmaScriptModule', () => {
     })
 
     it('should use the hash to traverse the module content using dots to separate levels', async () => {
-      const node = clownface({ dataset: rdf.dataset() })
+      const node = rdf.clownface()
         .blankNode()
         .addOut(ns.code.link, rdf.namedNode('node:@rdfjs/data-model#default.namedNode'))
 
@@ -53,9 +54,9 @@ describe('ecmaScriptModule', () => {
 
   describe('file:', () => {
     it('should return async the loaded module from the given URL', async () => {
-      const node = clownface({ dataset: rdf.dataset() })
+      const node = rdf.clownface()
         .blankNode()
-        .addOut(ns.code.link, rdf.namedNode(`file://${__dirname}/foobar.mjs`)) // eslint-disable-line n/no-path-concat
+        .addOut(ns.code.link, rdf.namedNode(`file://${__dirname}/foobar.js`)) // eslint-disable-line n/no-path-concat
 
       const value = await loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 
@@ -63,9 +64,9 @@ describe('ecmaScriptModule', () => {
     })
 
     it('should use the hash to traverse the module content from the given URL using dots to separate levels', async () => {
-      const node = clownface({ dataset: rdf.dataset() })
+      const node = rdf.clownface()
         .blankNode()
-        .addOut(ns.code.link, rdf.namedNode(`file://${__dirname}/foobar.mjs#foo.foo`)) // eslint-disable-line n/no-path-concat
+        .addOut(ns.code.link, rdf.namedNode(`file://${__dirname}/foobar.js#foo.foo`)) // eslint-disable-line n/no-path-concat
 
       const foo = await loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 
@@ -73,9 +74,9 @@ describe('ecmaScriptModule', () => {
     })
 
     it('should return async the loaded module from the given URI', async () => {
-      const node = clownface({ dataset: rdf.dataset() })
+      const node = rdf.clownface()
         .blankNode()
-        .addOut(ns.code.link, rdf.namedNode('file:foobar.mjs'))
+        .addOut(ns.code.link, rdf.namedNode('file:foobar.js'))
 
       const value = await loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 
@@ -83,9 +84,9 @@ describe('ecmaScriptModule', () => {
     })
 
     it('should use the hash to traverse the module content from the given URI using dots to separate levels', async () => {
-      const node = clownface({ dataset: rdf.dataset() })
+      const node = rdf.clownface()
         .blankNode()
-        .addOut(ns.code.link, rdf.namedNode('file:foobar.mjs#foo.foo'))
+        .addOut(ns.code.link, rdf.namedNode('file:foobar.js#foo.foo'))
 
       const foo = await loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 

@@ -7,6 +7,7 @@
     "prepare": "husky install",
     "lint": "eslint . --quiet --ignore-path .gitignore",
     "test": "c8 --reporter=lcov mocha"
+    "release": "changeset publish"
   },
   "repository": {
     "type": "git",

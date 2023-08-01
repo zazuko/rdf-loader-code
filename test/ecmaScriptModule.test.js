@@ -55,7 +55,7 @@ describe('ecmaScriptModule', () => {
     it('should return async the loaded module from the given URL', async () => {
       const node = clownface({ dataset: rdf.dataset() })
         .blankNode()
-        .addOut(ns.code.link, rdf.namedNode(`file://${__dirname}/foobar.mjs`)) // eslint-disable-line node/no-path-concat
+        .addOut(ns.code.link, rdf.namedNode(`file://${__dirname}/foobar.mjs`)) // eslint-disable-line n/no-path-concat
 
       const value = await loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 
@@ -65,7 +65,7 @@ describe('ecmaScriptModule', () => {
     it('should use the hash to traverse the module content from the given URL using dots to separate levels', async () => {
       const node = clownface({ dataset: rdf.dataset() })
         .blankNode()
-        .addOut(ns.code.link, rdf.namedNode(`file://${__dirname}/foobar.mjs#foo.foo`)) // eslint-disable-line node/no-path-concat
+        .addOut(ns.code.link, rdf.namedNode(`file://${__dirname}/foobar.mjs#foo.foo`)) // eslint-disable-line n/no-path-concat
 
       const foo = await loader({ term: node.term, dataset: node.dataset }, { basePath: __dirname })
 
@@ -104,7 +104,7 @@ describe('ecmaScriptModule', () => {
       const registry = {
         registerNodeLoader: (...args) => {
           called = args
-        }
+        },
       }
 
       loader.register(registry)

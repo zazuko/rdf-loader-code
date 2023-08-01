@@ -5,7 +5,7 @@ const loader = require('../arguments')
 const loadDataset = require('./support/loadDataset')
 
 const dummyLoaderRegistry = {
-  load: () => undefined
+  load: () => undefined,
 }
 
 describe('arguments loader', () => {
@@ -24,7 +24,7 @@ describe('arguments loader', () => {
       const dataset = await loadDataset('./arguments-list.ttl')
       const values = [undefined, '']
       const loaderRegistry = {
-        load: () => values.shift()
+        load: () => values.shift(),
       }
 
       const result = await loader({ term, dataset }, { loaderRegistry })
@@ -35,7 +35,7 @@ describe('arguments loader', () => {
     it('should use loaders to load values', async () => {
       const dataset = await loadDataset('./arguments-list.ttl')
       const loaderRegistry = {
-        load: ptr => ptr.value.toUpperCase()
+        load: ptr => ptr.value.toUpperCase(),
       }
 
       const result = await loader({ term, dataset }, { loaderRegistry })
@@ -49,14 +49,14 @@ describe('arguments loader', () => {
       const loaderRegistry = {
         load: (ptr, options) => {
           called = options
-        }
+        },
       }
 
       const options = {
         loaderRegistry,
         context: {},
         variables: new Map(),
-        basePath: '/some/path'
+        basePath: '/some/path',
       }
 
       const dataset = await loadDataset('./arguments-list.ttl')
@@ -77,21 +77,21 @@ describe('arguments loader', () => {
 
       deepStrictEqual(result, [{
         foo: 'bar',
-        a: 'b'
+        a: 'b',
       }])
     })
 
     it('should use loaders to load values', async () => {
       const dataset = await loadDataset('./arguments-named.ttl')
       const loaderRegistry = {
-        load: ptr => ptr.value.toUpperCase()
+        load: ptr => ptr.value.toUpperCase(),
       }
 
       const result = await loader({ term, dataset }, { loaderRegistry })
 
       deepStrictEqual(result, [{
         foo: 'BAR',
-        a: 'B'
+        a: 'B',
       }])
     })
 
@@ -102,7 +102,7 @@ describe('arguments loader', () => {
 
       deepStrictEqual(result, [{
         foo: 'bar',
-        a: ['b', 'c']
+        a: ['b', 'c'],
       }])
     })
 
@@ -112,14 +112,14 @@ describe('arguments loader', () => {
       const loaderRegistry = {
         load: (ptr, options) => {
           called = options
-        }
+        },
       }
 
       const options = {
         loaderRegistry,
         context: {},
         variables: new Map(),
-        basePath: '/some/path'
+        basePath: '/some/path',
       }
       const dataset = await loadDataset('./arguments-named.ttl')
 

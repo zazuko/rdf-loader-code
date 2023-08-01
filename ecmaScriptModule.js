@@ -2,7 +2,7 @@ const clownface = require('clownface')
 const iriResolve = require('./lib/iriResolve')
 const ns = require('./namespaces')
 
-async function loader ({ term, dataset }, { basePath } = {}) {
+async function loader({ term, dataset }, { basePath } = {}) {
   const link = clownface({ term, dataset }).out(ns.code('link'))
 
   if (link.term && link.term.termType !== 'NamedNode') {

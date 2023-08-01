@@ -1,11 +1,11 @@
 const cf = require('clownface')
 const ns = require('./namespaces')
 
-function isList (node) {
+function isList(node) {
   return node.out(ns.rdf('first')).terms.length === 1
 }
 
-async function parseArguments (args, options) {
+async function parseArguments(args, options) {
   // is it a list?
   if (isList(args)) {
     return Promise.all([...args.list()].map(arg => parseArgument(arg, options)))
@@ -26,7 +26,7 @@ async function parseArguments (args, options) {
   return [argObject]
 }
 
-async function parseArgument (arg, { context, variables, basePath, loaderRegistry }) {
+async function parseArgument(arg, { context, variables, basePath, loaderRegistry }) {
   const code = await loaderRegistry.load(arg, { context, variables, basePath })
 
   if (typeof code !== 'undefined') {
@@ -45,7 +45,7 @@ async function parseArgument (arg, { context, variables, basePath, loaderRegistr
   return arg
 }
 
-async function loader ({ term, dataset }, { property = ns.code('arguments'), ...options } = {}) {
+async function loader({ term, dataset }, { property = ns.code('arguments'), ...options } = {}) {
   return parseArguments(cf({ term, dataset }).out(property), options)
 }
 

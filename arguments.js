@@ -1,4 +1,5 @@
 import clownface from 'clownface'
+import { fromRdf } from 'rdf-literal'
 import * as ns from './namespaces.js'
 
 function isList(node) {
@@ -34,7 +35,7 @@ async function parseArgument(arg, { context, variables, basePath, loaderRegistry
   }
 
   if (arg.term.termType === 'Literal') {
-    return arg.value
+    return fromRdf(arg.term, true)
   }
 
   if (isList(arg)) {

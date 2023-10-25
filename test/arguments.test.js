@@ -11,12 +11,12 @@ describe('arguments loader', () => {
   const term = rdf.namedNode('http://example.com/')
 
   describe('loading from rdf:List', () => {
-    it('should fall back to verbatim literal value', async () => {
+    it('should fall back to native literal value', async () => {
       const dataset = await loadDataset('./arguments-list.ttl')
 
       const result = await loader({ term, dataset }, { loaderRegistry: dummyLoaderRegistry })
 
-      deepStrictEqual(result, ['a', '5'])
+      deepStrictEqual(result, ['a', 5, true, 5.6, new Date(Date.UTC(2000, 10, 20))])
     })
 
     it('should handle boolean false, but not undefined values from loaders', async () => {
@@ -28,7 +28,7 @@ describe('arguments loader', () => {
 
       const result = await loader({ term, dataset }, { loaderRegistry })
 
-      deepStrictEqual(result, ['a', ''])
+      deepStrictEqual(result, ['a', '', true, 5.6, new Date(Date.UTC(2000, 10, 20))])
     })
 
     it('should use loaders to load values', async () => {
@@ -39,7 +39,7 @@ describe('arguments loader', () => {
 
       const result = await loader({ term, dataset }, { loaderRegistry })
 
-      deepStrictEqual(result, ['A', '5'])
+      deepStrictEqual(result, ['A', '5', 'TRUE', '5.6', '2000-11-20'])
     })
 
     it('should forward options to loaderRegistry', async () => {

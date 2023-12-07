@@ -1,5 +1,11 @@
 # rdf-loader-code
 
+## 2.1.0
+
+### Minor Changes
+
+- f901cec: Bundle TypeScript declarations
+
 ## 2.0.0
 
 ### Major Changes

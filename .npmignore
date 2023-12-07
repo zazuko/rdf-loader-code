@@ -1,0 +1,6 @@
+!*.d.ts
+*.ts
+test
+.idea
+.github
+.changeset

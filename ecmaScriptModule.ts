@@ -1,11 +1,14 @@
 import clownface from 'clownface'
+import type { LoaderRegistry } from 'rdf-loaders-registry'
+import { isNamedNode } from 'is-graph-pointer'
 import iriResolve from './lib/iriResolve.js'
 import * as ns from './namespaces.js'
+import { GraphPointerLike } from './lib/types.js'
 
-export default async function loader({ term, dataset }, { basePath } = {}) {
+export default async function loader({ term, dataset }: GraphPointerLike, { basePath }: { basePath?: string } = {}) {
   const link = clownface({ term, dataset }).out(ns.code('link'))
 
-  if (link.term && link.term.termType !== 'NamedNode') {
+  if (!isNamedNode(link)) {
     throw new Error(`Cannot load ecmaScriptModule from term ${term.value}`)
   }
 
@@ -21,6 +24,6 @@ export default async function loader({ term, dataset }, { basePath } = {}) {
   return method.split('.').reduce((code, property) => code[property], code)
 }
 
-loader.register = registry => {
+loader.register = (registry: LoaderRegistry) => {
   registry.registerNodeLoader(ns.code('EcmaScriptModule'), loader)
 }

@@ -1,5 +1,5 @@
 import { deepStrictEqual, strictEqual } from 'assert'
-import rdf from '@zazuko/env'
+import rdf from '@zazuko/env-node'
 import loader from '../arguments.js'
 import loadDataset from './support/loadDataset.js'
 

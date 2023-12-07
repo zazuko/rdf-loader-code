@@ -1,10 +1,8 @@
 import { resolve } from 'path'
 import url from 'url'
-import rdf from '@zazuko/env'
-import fromFile from 'rdf-utils-fs/fromFile.js'
-import fromStream from 'rdf-dataset-ext/fromStream.js'
+import rdf from '@zazuko/env-node'
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 export default async function loadDataset(filename) {
-  return fromStream(rdf.dataset(), fromFile(resolve(__dirname, '..', filename)))
+  return rdf.dataset().import(rdf.fromFile(resolve(__dirname, '..', filename)))
 }

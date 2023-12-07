@@ -1,12 +1,15 @@
 import module from 'module'
 import clownface from 'clownface'
+import { isNamedNode } from 'is-graph-pointer'
+import type { LoaderRegistry } from 'rdf-loaders-registry'
 import iriResolve from './lib/iriResolve.js'
 import * as ns from './namespaces.js'
+import { GraphPointerLike } from './lib/types.js'
 
 const require = module.createRequire(import.meta.url)
 
-function parseLiteral({ term }, { context } = {}) {
-  if (term.datatype.equals(ns.code('EcmaScript'))) {
+function parseLiteral({ term }: GraphPointerLike, { context }: { context?: unknown | null } = {}) {
+  if (term.termType === 'Literal' && term.datatype.equals(ns.code('EcmaScript'))) {
     return (function () {
       return eval(`(${term.value})`) // eslint-disable-line no-eval,no-extra-parens
     }.call(context))
@@ -15,10 +18,10 @@ function parseLiteral({ term }, { context } = {}) {
   throw new Error(`Cannot load ecmaScript code from term ${term.value}`)
 }
 
-function parseNamedNode({ term, dataset }, { basePath } = {}) {
+function parseNamedNode({ term, dataset }: GraphPointerLike, { basePath }: { basePath?: string } = {}) {
   const link = clownface({ term, dataset }).out(ns.code('link'))
 
-  if (link.term && link.term.termType !== 'NamedNode') {
+  if (!isNamedNode(link)) {
     throw new Error(`Cannot load ecmaScript code from term ${term.value}`)
   }
 
@@ -34,7 +37,7 @@ function parseNamedNode({ term, dataset }, { basePath } = {}) {
   return method.split('.').reduce((code, property) => code[property], code)
 }
 
-export default function loader({ term, dataset }, options = {}) {
+export default function loader({ term, dataset }: GraphPointerLike, options = {}) {
   if (term && term.termType === 'Literal') {
     return parseLiteral({ term, dataset }, options)
   }
@@ -42,7 +45,7 @@ export default function loader({ term, dataset }, options = {}) {
   return parseNamedNode({ term, dataset }, options)
 }
 
-loader.register = registry => {
+loader.register = (registry: LoaderRegistry) => {
   registry.registerNodeLoader(ns.code('EcmaScript'), loader)
   registry.registerLiteralLoader(ns.code('EcmaScript'), loader)
 }

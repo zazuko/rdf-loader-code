@@ -8,7 +8,8 @@
     "prepare": "husky install",
     "lint": "eslint . --quiet --ignore-path .gitignore",
     "test": "c8 --reporter=lcov mocha",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "prepack": "tsc -p tsconfig.build.json"
   },
   "repository": {
     "type": "git",
@@ -24,20 +25,27 @@
   "dependencies": {
     "@rdfjs/namespace": "^2.0.0",
     "clownface": "^2.0.0",
+    "is-graph-pointer": "^2.1.0",
     "rdf-literal": "^1.3.1"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
     "@tpluscode/eslint-config": "^0.4.4",
+    "@types/clownface": "^2.0.5",
+    "@types/mocha": "^10.0.6",
     "@zazuko/env": "^1.0.1",
     "c8": "^7.7.3",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
     "mocha": "^9.0.2",
-    "rdf-dataset-ext": "^1.0.1",
-    "rdf-utils-fs": "^2.1.0"
+    "rdf-loaders-registry": "^1.0.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2"
   },
   "lint-staged": {
     "*.js": "eslint --fix --quiet"
+  },
+  "mocha": {
+    "loader": "ts-node/esm"
   }
 }

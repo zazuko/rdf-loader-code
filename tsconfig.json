@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "ES2022",
+    "strict": true,
+    "allowJs": true,
+    "declaration": true,
+    "skipLibCheck": true
+  }
+}

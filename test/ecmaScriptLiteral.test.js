@@ -1,5 +1,5 @@
 import { strictEqual, throws } from 'assert'
-import rdf from '@zazuko/env'
+import rdf from '@zazuko/env-node'
 import loader from '../ecmaScriptLiteral.js'
 import * as ns from '../namespaces.js'
 

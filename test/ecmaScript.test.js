@@ -1,6 +1,6 @@
 import { strictEqual, throws } from 'assert'
 import url from 'url'
-import rdf from '@zazuko/env'
+import rdf from '@zazuko/env-node'
 import loader from '../ecmaScript.js'
 import * as ns from '../namespaces.js'
 

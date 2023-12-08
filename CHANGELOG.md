@@ -1,5 +1,11 @@
 # rdf-loader-code
 
+## 2.1.1
+
+### Patch Changes
+
+- 798319d: Wrong .npmignore - declarations were actually missing
+
 ## 2.1.0
 
 ### Minor Changes

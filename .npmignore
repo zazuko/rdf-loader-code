@@ -1,5 +1,5 @@
-!*.d.ts
 *.ts
+!*.d.ts
 test
 .idea
 .github

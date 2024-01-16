@@ -1,4 +1,4 @@
-import type { NamedNode } from 'rdf-js'
+import type { NamedNode } from '@rdfjs/types'
 import clownface, { AnyPointer, MultiPointer } from 'clownface'
 import { fromRdf } from 'rdf-literal'
 import type { LoaderRegistry } from 'rdf-loaders-registry'

@@ -1,5 +1,11 @@
 # rdf-loader-code
 
+## 2.1.2
+
+### Patch Changes
+
+- de91ac6: Ban deprecated `rdf-js` package
+
 ## 2.1.1
 
 ### Patch Changes

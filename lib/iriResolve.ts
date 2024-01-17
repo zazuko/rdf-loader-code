@@ -1,3 +1,4 @@
+import { pathToFileURL } from 'url'
 import { resolve } from 'path'
 
 type IRI = Pick<URL, 'protocol' | 'pathname' | 'hash'>
@@ -13,7 +14,7 @@ const resolvers = new Map<string, Resolver>([
     }
 
     if (base) {
-      return resolve(base, url.pathname)
+      return pathToFileURL(resolve(base, url.pathname)).toString()
     }
 
     return url.pathname

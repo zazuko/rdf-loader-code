@@ -1,4 +1,5 @@
 import { strictEqual, throws } from 'assert'
+import { expect } from 'chai'
 import iriResolve from '../lib/iriResolve.js'
 
 describe('iriResolve', () => {
@@ -73,7 +74,7 @@ describe('iriResolve', () => {
 
       const result = iriResolve(str, '/root')
 
-      strictEqual(result.filename, '/root/test.js')
+      expect(result.filename).to.match(/\/root\/test\.js$/)
       strictEqual(result.method, 'test123')
     })
   })

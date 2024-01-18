@@ -27,7 +27,8 @@ function parseNamedNode({ term, dataset }: GraphPointerLike, { basePath }: { bas
 
   const { filename, method } = iriResolve(link.value, basePath)
 
-  const code = require(filename)
+  const path = typeof filename === 'string' ? filename : filename.pathname
+  const code = require(path)
 
   if (!method) {
     return code

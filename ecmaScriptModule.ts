@@ -14,7 +14,7 @@ export default async function loader({ term, dataset }: GraphPointerLike, { base
 
   const { filename, method } = iriResolve(link.value, basePath)
 
-  const code = await import(filename)
+  const code = await import(filename.toString())
 
   if (!method) {
     return code

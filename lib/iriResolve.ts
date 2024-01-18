@@ -1,10 +1,10 @@
-import { pathToFileURL } from 'url'
+import { pathToFileURL, URL } from 'url'
 import { resolve } from 'path'
 
 type IRI = Pick<URL, 'protocol' | 'pathname' | 'hash'>
 
 interface Resolver {
-  (url: IRI, base?: string): string
+  (url: IRI, base?: string): string | URL
 }
 
 const resolvers = new Map<string, Resolver>([
@@ -14,7 +14,7 @@ const resolvers = new Map<string, Resolver>([
     }
 
     if (base) {
-      return pathToFileURL(resolve(base, url.pathname)).toString()
+      return pathToFileURL(resolve(base, url.pathname))
     }
 
     return url.pathname
@@ -44,7 +44,7 @@ function parseIri(str: string): IRI {
 }
 
 interface Resolved extends IRI {
-  filename: string
+  filename: string | URL
   method: string
 }
 

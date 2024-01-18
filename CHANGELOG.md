@@ -1,5 +1,11 @@
 # rdf-loader-code
 
+## 2.1.3
+
+### Patch Changes
+
+- aa9a3f5: Fix Windows compatibility of module imports
+
 ## 2.1.2
 
 ### Patch Changes

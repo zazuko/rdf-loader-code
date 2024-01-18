@@ -1,4 +1,5 @@
 import module from 'module'
+import url from 'url'
 import clownface from 'clownface'
 import { isNamedNode } from 'is-graph-pointer'
 import type { LoaderRegistry } from 'rdf-loaders-registry'
@@ -27,7 +28,7 @@ function parseNamedNode({ term, dataset }: GraphPointerLike, { basePath }: { bas
 
   const { filename, method } = iriResolve(link.value, basePath)
 
-  const path = typeof filename === 'string' ? filename : filename.pathname
+  const path = typeof filename === 'string' ? filename : url.fileURLToPath(filename)
   const code = require(path)
 
   if (!method) {

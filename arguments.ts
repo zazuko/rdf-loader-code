@@ -56,7 +56,7 @@ async function parseArgument(arg: AnyPointer, { context, variables, basePath, lo
       return []
     })
 
-  const argMap = Object.fromEntries(await Promise.all(loadingNamedArgs))
+  const argMap = Object.fromEntries((await Promise.all(loadingNamedArgs)).filter(([key]) => !!key))
 
   if (Object.keys(argMap).length > 0) {
     return argMap

@@ -1,5 +1,11 @@
 # rdf-loader-code
 
+## 2.2.0
+
+### Minor Changes
+
+- 829dc79: Add simpler syntax for creating key/value pair arguments (closes #37, closes #38)
+
 ## 2.1.3
 
 ### Patch Changes

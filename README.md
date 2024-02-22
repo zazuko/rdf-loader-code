@@ -200,13 +200,13 @@ loading of an argument map. Such arguments are declared as name/value pairs.
 
 ```turtle
 @prefix code: <https://code.described.at/>.
+@prefix arg: <https://code.described.at/argument#>.
 
 <urn:call:string#startsWith> 
-  code:arguments [
-    code:name "first"; code:value "foo"
-  ], [
-    code:name "second"; code:value "bar"
-  ] .
+    code:arguments ([
+      arg:first "foo" ;
+      arg:second "bar" ;
+    ]) .
 ```
 
 Executing the code below against the above triples will return an object containing the values
@@ -220,20 +220,32 @@ Executing the code below against the above triples will return an object contain
 ]
 ```
 
-To make this method consistent with the positional flavor, the object will actually be wrapped
-in an array as presented above. 
+#### Mixed arguments
+
+Both methods can be sed together to represent any kind of function signature.
+
+For example, to call a function as below
 
 ```js
-import rdf from '@zazuko/env'
-import loadArguments from 'rdf-loader-code/arguments.js'
-import registry from './registry.js'
-import dataset from './dataset.js'
+myFunction('foo', 42, { bar: {  baz: 'baz' } })
+```
 
-const term = rdf.namedNode('urn:call:string#startsWith')
+You would declare the argument list as follows:
 
-const argumentsObject = loadArguments(
-  rdf.clownface({ term, dataset }),
-  {
-    loaderRegistry: registry
-  })
+```turtle
+@prefix code: <https://code.described.at/> .
+@prefix arg: <https://code.described.at/argument#> .
+
+<urn:call:myFunction>
+  code:arguments
+    (
+      "foo"
+      42
+      [
+        arg:bar
+          [
+            arg:baz "baz"
+          ]
+      ]
+    ) .
 ```

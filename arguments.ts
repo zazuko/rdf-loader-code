@@ -38,9 +38,29 @@ async function parseArguments(args: MultiPointer, options: ParseArgument): Promi
   return [argObject]
 }
 
+const argumentPropPattern = new RegExp(`^${ns.code('argument#').value}(.+)$`)
+
 async function parseArgument(arg: AnyPointer, { context, variables, basePath, loaderRegistry }: ParseArgument): Promise<unknown> {
   if (!isGraphPointer(arg)) {
     throw new Error('Cannot load argument. Expected a single node or RDF List.')
+  }
+
+  const keyValuePairs = await [...arg.dataset.match(arg.term)]
+    .reduce(async (previous: Promise<[string, unknown][]>, quad) => {
+      const isArgumentProp = quad.predicate.value.match(argumentPropPattern)
+      if (isArgumentProp) {
+        const entries = await previous
+        const key = isArgumentProp[1]
+        const value = await parseArgument(clownface({ dataset: arg.dataset, term: quad.object }), { context, variables, basePath, loaderRegistry })
+        entries.push([key, value])
+        return entries
+      }
+
+      return previous
+    }, Promise.resolve([]))
+
+  if (keyValuePairs.length > 0) {
+    return Object.fromEntries(keyValuePairs)
   }
 
   const code = await loaderRegistry.load(arg, { context, variables, basePath })

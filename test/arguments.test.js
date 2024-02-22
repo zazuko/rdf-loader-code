@@ -129,4 +129,34 @@ describe('arguments loader', () => {
       }
     })
   })
+
+  describe('shorthand syntax', () => {
+    it('load key-value pairs from a single blank node', async () => {
+      const term = rdf.namedNode('http://example.com/single')
+      const dataset = await loadDataset('./arguments-shorthand.ttl')
+
+      const result = await loader({ term, dataset }, { loaderRegistry: dummyLoaderRegistry })
+
+      deepStrictEqual(result, [{
+        foo: 'foo',
+        bar: true,
+        baz: 10,
+      }])
+    })
+
+    it('load deep key-value pairs', async () => {
+      const term = rdf.namedNode('http://example.com/nested')
+      const dataset = await loadDataset('./arguments-shorthand.ttl')
+
+      const result = await loader({ term, dataset }, { loaderRegistry: dummyLoaderRegistry })
+
+      deepStrictEqual(result, [{
+        foo: {
+          bar: {
+            baz: 'buzz',
+          },
+        },
+      }])
+    })
+  })
 })

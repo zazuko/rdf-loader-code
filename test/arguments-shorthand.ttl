@@ -1,0 +1,20 @@
+@prefix arg: <https://code.described.at/argument#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix code: <https://code.described.at/> .
+
+<http://example.com/single> code:arguments
+        (
+            [
+                arg:foo "foo" ;
+                arg:bar true ;
+                arg:baz 10 ;
+            ]
+        ) .
+
+
+<http://example.com/nested> code:arguments
+        (
+            [
+                arg:foo [ arg:bar [ arg:baz "buzz" ] ] ;
+            ]
+        ) .

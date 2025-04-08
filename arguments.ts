@@ -18,6 +18,10 @@ interface ParseArgument {
 }
 
 async function parseArguments(args: MultiPointer, options: ParseArgument): Promise<unknown[]> {
+  if (args.terms.length === 0) {
+    return []
+  }
+
   // is it a list?
   if (isList(args)) {
     return Promise.all([...args.list()!].map(arg => parseArgument(arg, options)))

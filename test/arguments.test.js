@@ -10,6 +10,12 @@ const dummyLoaderRegistry = {
 describe('arguments loader', () => {
   const term = rdf.namedNode('http://example.com/')
 
+  it('should return empty array when there are no arguments', async () => {
+    const result = await loader(rdf.clownface().blankNode(), { loaderRegistry: dummyLoaderRegistry })
+
+    strictEqual(result.length, 0)
+  })
+
   describe('loading from rdf:List', () => {
     it('should fall back to native literal value', async () => {
       const dataset = await loadDataset('./arguments-list.ttl')

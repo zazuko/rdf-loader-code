@@ -1,5 +1,11 @@
 # rdf-loader-code
 
+## 2.2.1
+
+### Patch Changes
+
+- b633029: Non-empty array was returned when there were no `code:arguments`
+
 ## 2.2.0
 
 ### Minor Changes

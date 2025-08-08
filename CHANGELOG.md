@@ -1,5 +1,11 @@
 # rdf-loader-code
 
+## 2.2.2
+
+### Patch Changes
+
+- 7a61a1d: Updated `rdf-literal` to v2
+
 ## 2.2.1
 
 ### Patch Changes

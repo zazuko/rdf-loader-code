@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
-    "@rdfjs/data-model": "^2",
+    "@rdfjs/data-model": "^1",
     "@tpluscode/eslint-config": "^0.4.4",
     "@types/chai": "^4.3.11",
     "@types/clownface": "^2.0.10",
@@ -42,13 +42,13 @@
     "lint-staged": "^13.2.3",
     "mocha": "^11.1.0",
     "rdf-loaders-registry": "^1.0.3",
-    "ts-node": "^10.9.1",
+    "tsx": "^4.20.3",
     "typescript": "^5.3.2"
   },
   "lint-staged": {
     "*.js": "eslint --fix --quiet"
   },
   "mocha": {
-    "loader": "ts-node/esm"
+    "require": "tsx"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "rdf-loader-code",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "JavaScript native types loader for the Code ontology",
   "main": "index.js",
   "type": "module",
